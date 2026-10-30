@@ -1,0 +1,427 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    app:layout_constraintBottom_toBottomOf="parent">
+
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/bottomBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="24dp">
+
+
+            <TextView
+                android:id="@+id/tvProductTitle"
+                style="@style/TextViewHeaderSecond"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text=""
+                app:layout_constraintEnd_toStartOf="@+id/btnGoBack"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Синяя пустошь"/>
+
+
+            <ImageButton
+                android:id="@+id/btnGoBack"
+                style="@style/ImageButtonBack"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                app:layout_constraintBottom_toBottomOf="@+id/tvProductTitle"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/tvProductTitle" />
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/bookDescription"
+                style="@style/ContainerBasic"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:padding="12dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvProductTitle">
+
+                <TextView
+                    android:id="@+id/tvDescription"
+                    style="@style/TextViewParagraphLarge"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="12dp"
+                    android:text="@string/bookPageS1"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toStartOf="@+id/ivBookPhoto"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+
+                <TextView
+                    android:id="@+id/tvBookAuthor"
+                    style="@style/TextViewParagraphSmall"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="12dp"
+                    android:justificationMode="inter_word"
+                    android:text=""
+                    app:layout_constraintEnd_toStartOf="@+id/ivBookPhoto"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tvDescription"
+                    tools:text="Текст описания товара. Он может быть достаточно длинным, чтобы заполнить левую часть экрана. "/>
+
+                <ImageView
+                    android:id="@+id/ivBookPhoto"
+                    style="@style/ImageViewBg"
+                    android:layout_width="150dp"
+                    android:layout_height="200dp"
+                    android:clipToOutline="true"
+                    android:scaleType="centerCrop"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:srcCompat="@tools:sample/backgrounds/scenic" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/bookDetails"
+                style="@style/ContainerBasic"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:padding="12dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/bookDescription">
+
+                <TextView
+
+                    android:id="@+id/tvDetailsHeader"
+                    style="@style/TextViewParagraphLarge"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/bookPageS2"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tvAuthor"
+                    style="@style/TextViewParagraphSmall"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:justificationMode="inter_word"
+                    android:text=""
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvDetailsHeader"
+                    tools:text="Автор: Иванов Иван Иванович"/>
+
+                <TextView
+                    android:id="@+id/tvGenre"
+                    style="@style/TextViewParagraphSmall"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:justificationMode="inter_word"
+                    android:text=""
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvAuthor"
+                    tools:text="Жанр: Проза"/>
+
+                <TextView
+                    android:id="@+id/tvBookCount"
+                    style="@style/TextViewParagraphSmall"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:justificationMode="inter_word"
+                    android:text=""
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvGenre"
+                    tools:text="Кол-во страниц: 245"/>
+
+                <TextView
+                    android:id="@+id/tvWriteYear"
+                    style="@style/TextViewParagraphSmall"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:justificationMode="inter_word"
+                    android:text=""
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvBookCount"
+                    tools:text="Год написания: 1995"/>
+
+                <TextView
+                    android:id="@+id/tvISBN"
+                    style="@style/TextViewParagraphSmall"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:justificationMode="inter_word"
+                    android:text=""
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvWriteYear"
+                    tools:text="ISBN: 2343-4343-444-444"/>
+
+                <TextView
+                    android:id="@+id/tvDemoLink"
+                    style="@style/TextViewParagraphSmall"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:justificationMode="inter_word"
+                    android:text=""
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvISBN"
+                    tools:text="DEMO версия: book_demo" />
+
+                <ImageButton
+                    android:id="@+id/btnToCart"
+                    style="@style/ImageButtonBuyIt"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+
+                    android:layout_marginTop="12dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvDemoLink" />
+
+                <TextView
+                    android:id="@+id/tvProductPrice"
+                    style="@style/TextViewParagraphMedium"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@+id/btnToCart"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/btnToCart"
+                    tools:text="120.00 руб"/>
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/commentForm"
+                style="@style/ContainerBasic"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:padding="12dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/bookDetails">
+
+                <TextView
+                    android:id="@+id/tvCommentTextLabel"
+                    style="@style/TextViewParagraphLarge"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/bookPageS4"
+                    android:textStyle="bold"
+                    android:labelFor="@+id/etCommentText"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+
+                <EditText
+                    android:id="@+id/etCommentText"
+                    style="@style/EditTextBasic"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:gravity="start"
+                    android:hint="@string/bookPageS5"
+                    android:inputType="textMultiLine"
+                    android:maxLines="10"
+                    android:minLines="3"
+                    android:padding="10dp"
+                    android:scrollbars="vertical"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvCommentTextLabel" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btnCreateComment"
+                    style="@style/ButtonBasic"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="12dp"
+                    android:text="@string/bookPageS6"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/etCommentText" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/myCommentForm"
+                style="@style/ContainerBasic"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:padding="12dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/commentForm">
+
+                <TextView
+                    android:id="@+id/tvCommentFormHeader"
+                    style="@style/TextViewParagraphLarge"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    android:text="@string/bookPageS7"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/myCommentText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:text=""
+                    style="@style/TextViewParagraphMedium"
+
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvCommentFormHeader"
+                    tools:text="Очень длииииииииииииииииииииииииинный комммммммммммммметтт"/>
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btnDeleteComment"
+                    style="@style/ButtonBasic"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="12dp"
+                    android:text="@string/bookPageS8"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/myCommentText" />
+
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                style="@style/ContainerBasic"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:padding="12dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/myCommentForm">
+
+                <TextView
+                    android:id="@+id/tvAllCommentHeader"
+                    style="@style/TextViewParagraphLarge"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    android:text="@string/bookPageS9"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvAllCommentHeader">
+
+                    <include layout="@layout/item_comment" />
+
+                    <include layout="@layout/item_comment" />
+
+                    <include layout="@layout/item_comment" />
+
+                    <include layout="@layout/item_comment" />
+
+                </LinearLayout>
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/bottomBar"
+        style="@style/NavigatePanel"
+        android:layout_width="0dp"
+        android:layout_height="78dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+
+        <ImageButton
+            android:id="@+id/icSearch"
+            style="@style/ImageButtonSearch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/icProfile"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <ImageButton
+            android:id="@+id/icProfile"
+            style="@style/ImageButtonProfile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <ImageButton
+            android:id="@+id/icCart"
+            style="@style/ImageButtonCart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/icProfile"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+
+

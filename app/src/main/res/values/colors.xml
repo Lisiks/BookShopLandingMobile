@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Текст -->
+    <color name="text_primary_light">#432A20</color>   <!-- коричневый -->
+    <color name="text_heading_light">#FF3E2723</color>   <!-- тёмно-коричневый -->
+
+    <!-- Фон (оттенки белого) -->
+    <color name="background_primary_light">#FFFAFAFA</color>
+    <color name="background_secondary_light">#F0F0F0</color>
+    <color name="background_tertiary_light">#EBEBEB</color>
+    <color name="light_theme_color">#E6E6E6</color>
+
+    <!-- Акцент / границы -->
+    <color name="accent_light">#FF8D6E63</color>
+    <color name="divider_light">#FFD7CCC8</color>
+
+    <!-- ==================== ТЁМНАЯ ТЕМА ==================== -->
+
+    <!-- Текст (оттенки белого) -->
+    <color name="text_primary_dark">#FFE6E6E6</color>
+    <color name="text_heading_dark">#FFFFFFFF</color>
+
+    <!-- Фон (оттенки светло-серого) -->
+    <color name="dark_theme_color">#2D2D2D</color>
+    <color name="background_primary_dark">#232323</color>
+    <color name="background_secondary_dark">#FF2A2A2A</color>
+    <color name="background_tertiary_dark">#FF383838</color>
+
+    <!-- Акцент / границы -->
+    <color name="accent_dark">#FFBCAAA4</color>
+    <color name="divider_dark">#FF4A4A4A</color>
+
+</resources>

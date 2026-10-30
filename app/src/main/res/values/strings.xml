@@ -1,0 +1,33 @@
+<resources>
+    <string name="app_name">BookShopApp</string>
+    <string name="registerPageS1">Регистрация</string>
+    <string name="registerPageS2">Логин:</string>
+    <string name="registerPageS3">Пароль:</string>
+    <string name="registerPageS4">Повтор пароля:</string>
+    <string name="registerPageS5">Зарегистрироваться</string>
+    <string name="registerPageS6">Вход</string>
+    <string name="profilePageS1">Профиль</string>
+    <string name="loginPageS1">Вход</string>
+    <string name="loginPageS2">Логин:</string>
+    <string name="loginPageS3">Пароль:</string>
+    <string name="loginPageS4">Войти</string>
+    <string name="loginPageS5">Зарегистрироваться</string>
+    <string name="orderItemS1">Товар</string>
+    <string name="orderItemS2">Цена</string>
+    <string name="createOrderPageS1">Оформить заказ</string>
+    <string name="createOrderPageS2">Магазин:</string>
+    <string name="createOrderS3">Создать заказ</string>
+    <string name="createOrderPageS4">Назад</string>
+    <string name="catalogPageS1">Каталог</string>
+    <string name="cartPageS1">Корзина</string>
+    <string name="cartPageS2">Оформить заказ</string>
+    <string name="cartPageS3">Очистить корзину</string>
+    <string name="bookPageS1">Описание:</string>
+    <string name="bookPageS2">Подробности:</string>
+    <string name="bookPageS4">Оставить комментарий:</string>
+    <string name="bookPageS5">Введите текст коментария...</string>
+    <string name="bookPageS6">Сохранить</string>
+    <string name="bookPageS7">Мой комментарий:</string>
+    <string name="bookPageS8">Удалить</string>
+    <string name="bookPageS9">Все комментарии:</string>
+</resources>

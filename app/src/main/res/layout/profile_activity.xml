@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/tvPageTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
+        android:text="@string/profilePageS1"
+        style="@style/TextViewHeaderFirst"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvUsername"
+        style="@style/TextViewParagraphLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvPageTitle"
+        tools:text="UserLisiks234"/>
+
+    <ImageButton
+        android:id="@+id/btnExit"
+        style="@style/ImageButtonExit"
+        android:layout_width="48dp"
+        android:layout_height="32dp"
+        android:layout_marginEnd="24dp"
+        android:padding="6dp"
+        app:layout_constraintBottom_toBottomOf="@+id/tvUsername"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tvUsername" />
+
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/svOrders"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="24dp"
+        android:fillViewport="true"
+        style="@style/ContainerBasic"
+        app:layout_constraintBottom_toTopOf="@+id/bottomBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvUsername">
+
+
+        <LinearLayout
+            android:id="@+id/llOrders"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp" >
+
+
+            <include layout="@layout/item_order" />
+            <include layout="@layout/item_order" />
+            <include layout="@layout/item_order" />
+            <include layout="@layout/item_order" />
+            <include layout="@layout/item_order" />
+            <include layout="@layout/item_order" />
+            <include layout="@layout/item_order" />
+            <include layout="@layout/item_order" />
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/bottomBar"
+        android:layout_width="0dp"
+        android:layout_height="78dp"
+        style="@style/NavigatePanel"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+
+        <ImageButton
+            android:id="@+id/icSearch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/ImageButtonSearch"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/icProfile"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <ImageButton
+            android:id="@+id/icProfile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/ImageButtonProfile"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <ImageButton
+            android:id="@+id/icCart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/ImageButtonCart"
+
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/icProfile"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

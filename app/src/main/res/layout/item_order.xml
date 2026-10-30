@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.motion.widget.MotionLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/OrderItem"
+    style="@style/ItemBasic"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="16dp"
+    android:clickable="true"
+    android:focusable="true"
+    app:layoutDescription="@xml/order_motion">
+
+
+    <TextView
+        android:id="@+id/tvOrderNumber"
+        style="@style/TextViewHeaderThird"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+
+        android:layout_marginHorizontal="12dp"
+        android:layout_marginTop="12dp"
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Заказ №435"/>
+
+    <TextView
+        android:id="@+id/tvOrderDate"
+        style="@style/TextViewParagraphMedium"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+
+        android:layout_marginHorizontal="12dp"
+        android:layout_marginTop="12dp"
+
+        app:layout_constraintBottom_toBottomOf="@+id/tvOrderNumber"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tvOrderNumber"
+        tools:text="12.20.2025"/>
+
+
+    <TextView
+        android:id="@+id/tvOrderStatus"
+        style="@style/TextViewParagraphSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+
+        android:layout_marginHorizontal="12dp"
+        android:layout_marginTop="6dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvOrderNumber"
+        tools:text="В сборке"/>
+
+    <TextView
+        android:id="@+id/tvOrderPrice"
+        style="@style/TextViewParagraphMedium"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_marginHorizontal="12dp"
+
+        android:text=""
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvOrderStatus"
+        tools:text="120.00 руб."/>
+
+
+    <LinearLayout
+        android:id="@+id/tvOrderDescription"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="12dp"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvOrderPrice">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/TextViewParagraphSmall"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/orderItemS1"
+                android:textStyle="bold" />
+
+            <TextView
+                style="@style/TextViewParagraphSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/orderItemS2"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
+            android:background="@color/divider_light" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp">
+
+            <TextView
+                style="@style/TextViewParagraphSmall"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text=""
+                tools:text="Война и мир"/>
+
+            <TextView
+                style="@style/TextViewParagraphSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                tools:text="240.00 руб."/>
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+</androidx.constraintlayout.motion.widget.MotionLayout>

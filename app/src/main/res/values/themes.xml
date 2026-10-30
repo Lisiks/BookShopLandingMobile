@@ -1,0 +1,169 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Theme.BookShopApp" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:windowBackground">@color/light_theme_color</item>
+        <item name="android:colorBackground">@color/light_theme_color</item>
+    </style>
+
+    <!--  Иконки навигации  -->
+    <style name="NavigatePanel">
+        <item name="android:background">@color/background_tertiary_light</item>
+    </style>
+
+    <style name="ImageButtonSearch" parent="Widget.AppCompat.ImageButton">
+        <item name="android:src">@drawable/ic_search_brown</item>
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+
+    <style name="ImageButtonProfile" parent="Widget.AppCompat.ImageButton">
+        <item name="android:src">@drawable/ic_profile_brown</item>
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+
+    <style name="ImageButtonCart" parent="Widget.AppCompat.ImageButton">
+        <item name="android:src">@drawable/ic_shoping_cart_brown</item>
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+
+    <!--  Стили текста  -->
+
+    <style name="TextViewHeaderFirst" parent="Widget.AppCompat.TextView">
+        <item name="android:fontFamily">@font/manrope_regular</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">36sp</item>
+        <item name="android:textColor">@color/text_heading_light</item>
+    </style>
+
+    <style name="TextViewHeaderSecond" parent="Widget.AppCompat.TextView">
+        <item name="android:fontFamily">@font/manrope_regular</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">30sp</item>
+        <item name="android:textColor">@color/text_heading_light</item>
+    </style>
+
+    <style name="TextViewHeaderThird" parent="Widget.AppCompat.TextView">
+        <item name="android:fontFamily">@font/manrope_regular</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/text_heading_light</item>
+    </style>
+
+    <style name="TextViewParagraphLarge" parent="Widget.AppCompat.TextView">
+        <item name="android:fontFamily">@font/inter_regular</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/text_primary_light</item>
+    </style>
+
+
+    <style name="TextViewParagraphMedium" parent="Widget.AppCompat.TextView">
+        <item name="android:fontFamily">@font/inter_regular</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/text_primary_light</item>
+    </style>
+
+    <style name="TextViewParagraphSmall" parent="Widget.AppCompat.TextView">
+        <item name="android:fontFamily">@font/inter_regular</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/text_primary_light</item>
+    </style>
+
+
+    <style name="TextViewLink" parent="Widget.AppCompat.TextView">
+        <item name="android:fontFamily">@font/inter_regular</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/text_heading_light</item>
+    </style>
+
+    <!--  Виджеты  -->
+
+    <style name="EditTextBasic" parent="Widget.AppCompat.EditText">
+        <item name="android:background">@drawable/bg_widgets_light_secondary_layer</item>
+        <item name="android:fontFamily">@font/inter_regular</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/text_primary_light</item>
+    </style>
+
+    <style name="ButtonBasic" parent="Widget.AppCompat.Button">
+        <item name="android:textAllCaps">false</item>
+        <item name="android:background">@drawable/bg_button_light</item>
+        <item name="android:fontFamily">@font/inter_regular</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/background_primary_light</item>
+    </style>
+
+    <style name="ButtonAlt" parent="Widget.AppCompat.Button">
+        <item name="android:textAllCaps">false</item>
+        <item name="android:background">@drawable/bg_widgets_light_first_layer</item>
+        <item name="android:fontFamily">@font/inter_regular</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/text_primary_light</item>
+    </style>
+
+
+    <!--  Стили для профиля пользователя -->
+    <style name="ImageButtonExit" parent="Widget.AppCompat.ImageButton">
+        <item name="android:src">@drawable/ic_exit_brown</item>
+        <item name="android:background">@drawable/bg_widgets_light_secondary_layer</item>
+    </style>
+
+    <style name="ContainerBasic">
+        <item name="android:background">@drawable/bg_widgets_light_secondary_layer</item>
+    </style>
+
+    <style name="ItemBasic">
+        <item name="android:background">@drawable/bg_widgets_light_first_layer</item>
+    </style>
+
+
+    <!--  Стили для корзины -->
+
+    <style name="ImageButtonCloseRemove" parent="Widget.AppCompat.ImageButton">
+        <item name="android:src">@drawable/ic_close_brown</item>
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+
+
+    <!--  Стили для каталога -->
+
+    <style name="EditTextSearch" parent="EditTextBasic">
+        <item name="android:drawableEnd">@drawable/ic_search_brown</item>
+    </style>
+
+
+    <style name="ImageButtonClearSearchParams" parent="ImageButtonCloseRemove">
+        <item name="android:background">@drawable/bg_widgets_light_secondary_layer</item>
+    </style>
+
+    <style name="ImageButtonParams" parent="Widget.AppCompat.ImageButton">
+        <item name="android:src">@drawable/ic_params_brown</item>
+        <item name="android:background">@drawable/bg_widgets_light_secondary_layer</item>
+    </style>
+
+
+    <style name="ImageButtonBuyIt" parent="Widget.AppCompat.ImageButton">
+        <item name="android:src">@drawable/ic_shoping_cart_brown</item>
+        <item name="android:background">@drawable/bg_widgets_light_secondary_layer</item>
+    </style>
+
+    <!--  Стили для страницы товара -->
+
+    <style name="ImageButtonBack" parent="Widget.AppCompat.ImageButton">
+        <item name="android:src">@drawable/ic_back_brown</item>
+        <item name="android:background">@drawable/bg_widgets_light_secondary_layer</item>
+    </style>
+
+    <style name="ImageViewBg">
+        <item name="android:background">@drawable/bg_image_view</item>
+    </style>
+
+
+
+
+
+
+
+
+
+
+
+</resources>
