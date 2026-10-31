@@ -1,12 +1,11 @@
-package com.example.bookshopapp
+package com.example.bookshopapp.ui
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.EditText
-import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.bookshopapp.databinding.CatalogActivityBinding
+
+import  kotlin.random.Random
 
 class CatalogActivity : AppCompatActivity() {
     private var _binding: CatalogActivityBinding? = null
@@ -18,7 +17,12 @@ class CatalogActivity : AppCompatActivity() {
         _binding = CatalogActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        setNavigateBtnsListeners()
 
+        binding.tvPageTitle.setText(Random.nextInt(1, 10).toString())
+    }
+
+    private fun setNavigateBtnsListeners() {
         binding.icSearch.setOnClickListener {
             val searchActivityIntent = Intent(this, CatalogActivity::class.java)
             startActivity(searchActivityIntent)
@@ -29,6 +33,9 @@ class CatalogActivity : AppCompatActivity() {
             startActivity(profileActivityIntent)
         }
 
-
+        binding.icCart.setOnClickListener {
+            val cartActivityIntent = Intent(this, CartActivity::class.java)
+            startActivity(cartActivityIntent)
+        }
     }
 }
