@@ -6,5 +6,5 @@ import kotlinx.serialization.Serializable
 
 data class OrderPostDTO(
     val shopId: Int,
-    val items: List<OrderItemPostDTO>
+    val items: List<Map<String, Int>>
 )
