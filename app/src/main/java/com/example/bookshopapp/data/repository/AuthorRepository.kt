@@ -7,18 +7,17 @@ import com.example.bookshopapp.data.remote.dto.AuthorDTO
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import okio.IOException
-import retrofit2.HttpException
 import kotlin.coroutines.cancellation.CancellationException
 
 
-interface AuthorsRepository {
+interface AuthorRepository {
     suspend fun getAuthors(): Map<Int, AuthorDTO>
 }
 
 
 class NetworkAuthorRepository(
     private val authorApiService: AuthorApiService
-) : AuthorsRepository {
+) : AuthorRepository {
     private var cachedAuthors: Map<Int, AuthorDTO> = mapOf()
     private val mutex = Mutex()
 

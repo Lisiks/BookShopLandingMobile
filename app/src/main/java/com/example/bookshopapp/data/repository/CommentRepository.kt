@@ -13,7 +13,7 @@ import okio.IOException
 import retrofit2.HttpException
 import kotlin.coroutines.cancellation.CancellationException
 
-interface CommentsRepository {
+interface CommentRepository {
     suspend fun getComments(bookId: Int): List<CommentDTO>
     suspend fun getCommentMe(bookId: Int): CommentDTO
     suspend fun createComment(bookId: Int, text: String)
@@ -24,7 +24,7 @@ interface CommentsRepository {
 
 class NetworkCommentRepository(
     private  val commentApiService: CommentApiService
-): CommentsRepository {
+): CommentRepository {
     val mutex = Mutex()
 
     override suspend fun getComments(bookId: Int): List<CommentDTO> = mutex.withLock {

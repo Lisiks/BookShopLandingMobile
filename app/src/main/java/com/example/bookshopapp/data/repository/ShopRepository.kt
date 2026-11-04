@@ -10,14 +10,14 @@ import okio.IOException
 import kotlin.coroutines.cancellation.CancellationException
 
 
-interface ShopsRepository {
+interface ShopRepository {
     suspend fun getShops(): Map<Int, ShopDTO>
 }
 
 
 class NetworkShopsRepository(
     private val shopApiService: ShopApiService
-) : ShopsRepository {
+) : ShopRepository {
     private var cachedShops: Map<Int, ShopDTO> = mapOf()
     private val mutex = Mutex()
 
