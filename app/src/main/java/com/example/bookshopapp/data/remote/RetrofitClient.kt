@@ -1,5 +1,6 @@
 package com.example.bookshopapp.data.remote
 
+import android.content.Context
 import com.example.bookshopapp.data.remote.api.AuthorApiService
 import com.example.bookshopapp.data.remote.api.BookApiService
 import com.example.bookshopapp.data.remote.api.CommentApiService
@@ -14,13 +15,21 @@ import okhttp3.JavaNetCookieJar
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import java.net.CookieManager
 import java.net.CookiePolicy
+import java.net.Proxy
 import java.util.concurrent.TimeUnit
+import net.gotev.cookiestore.SharedPreferencesCookieStore
 
-object RetrofitClient {
-    private const val BASE_URL = "http://10.0.2.2:8000/"
+
+class RetrofitClient(
+    context: Context
+) {
+    // Перед стартом на localhost - пробросить порт adb reverse tcp:8000 tcp:8000
+
+    private val baseUrl = "http://127.0.0.1:8000/"
 
     private val json = Json {
         ignoreUnknownKeys = true
@@ -29,20 +38,28 @@ object RetrofitClient {
     }
 
 
-    private val cookieManager = CookieManager().apply {
-        setCookiePolicy(CookiePolicy.ACCEPT_ALL)
-    }
+    private val cookieManager = CookieManager(
+        SharedPreferencesCookieStore(context, "application_cookies"),
+        CookiePolicy.ACCEPT_ALL
+    )
+
     private val cookieJar = JavaNetCookieJar(cookieManager)
+
+
+    val logging = HttpLoggingInterceptor().apply {
+        level = HttpLoggingInterceptor.Level.BODY
+    }
 
     private val okHttpClient = OkHttpClient.Builder()
         .cookieJar(cookieJar)
-        .connectTimeout(30, TimeUnit.SECONDS)
-        .readTimeout(30, TimeUnit.SECONDS)
-        .writeTimeout(30, TimeUnit.SECONDS)
+        .addInterceptor(logging)
+        .connectTimeout(10, TimeUnit.SECONDS)
+        .readTimeout(10, TimeUnit.SECONDS)
+        .writeTimeout(10, TimeUnit.SECONDS)
         .build()
 
     private val retrofit = Retrofit.Builder()
-        .baseUrl(BASE_URL)
+        .baseUrl(baseUrl)
         .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
         .client(okHttpClient)
         .build()

@@ -16,6 +16,9 @@ import kotlin.coroutines.cancellation.CancellationException
 
 
 interface BookRepository {
+
+    val pageIsLastValue: Boolean
+
     suspend fun getCachedBooks(): Map<Int, BookDTO>
     suspend fun getBooks(
         curTitle: String? = null,
@@ -37,8 +40,12 @@ class NetworkBookRepository(
     private val mutex = Mutex()
 
     private var page: Int = 0
-    var pageIsLast = false
-        private set
+    private var pageIsLast = false
+
+    override val pageIsLastValue
+        get() = pageIsLast
+
+
     var title: String? = null
         private set
     var maxPrice: Double? = null
@@ -110,7 +117,6 @@ class NetworkBookRepository(
 
             try {
                 val responseResult = bookApiService.getBooks(page + 1, title, minPrice, maxPrice, authorId, genreId)
-
                 if (responseResult.isEmpty()) {
                     pageIsLast = true
                 } else {

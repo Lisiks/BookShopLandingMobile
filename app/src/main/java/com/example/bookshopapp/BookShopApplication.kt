@@ -20,41 +20,41 @@ import com.example.bookshopapp.data.repository.UserRepository
 
 class BookShopApplication : Application() {
 
-    val authorsRepository: AuthorRepository by lazy {
-        NetworkAuthorRepository(RetrofitClient.authorApi)
-    }
-
-    val booksRepository: BookRepository by lazy {
-        NetworkBookRepository(RetrofitClient.bookApi)
-    }
-
-    val commentsRepository: CommentRepository by lazy {
-        NetworkCommentRepository(RetrofitClient.commentApi)
-    }
-
-    val genresRepository: GenreRepository by lazy {
-        NetworkGenreRepository(RetrofitClient.genreApi)
-    }
-
-    val usersRepository: UserRepository by lazy {
-        NetworkUserRepository(RetrofitClient.userApi)
-    }
-
-    val shopRepository: ShopRepository by lazy {
-        NetworkShopsRepository(RetrofitClient.shopApi)
-    }
-
-    val ordersRepository: OrderRepository by lazy {
-        NetworkOrderRepository(RetrofitClient.orderApi)
-    }
-
-    companion object {
-        lateinit var instance: BookShopApplication
-            private set
-    }
+    lateinit var retrofitClient: RetrofitClient
+        private set
 
     override fun onCreate() {
         super.onCreate()
-        instance = this
+        retrofitClient = RetrofitClient(this)
     }
+
+
+    val authorsRepository: AuthorRepository by lazy {
+        NetworkAuthorRepository(retrofitClient.authorApi)
+    }
+
+    val booksRepository: BookRepository by lazy {
+        NetworkBookRepository(retrofitClient.bookApi)
+    }
+
+    val commentsRepository: CommentRepository by lazy {
+        NetworkCommentRepository(retrofitClient.commentApi)
+    }
+
+    val genresRepository: GenreRepository by lazy {
+        NetworkGenreRepository(retrofitClient.genreApi)
+    }
+
+    val usersRepository: UserRepository by lazy {
+        NetworkUserRepository(retrofitClient.userApi)
+    }
+
+    val shopRepository: ShopRepository by lazy {
+        NetworkShopsRepository(retrofitClient.shopApi)
+    }
+
+    val ordersRepository: OrderRepository by lazy {
+        NetworkOrderRepository(retrofitClient.orderApi)
+    }
+
 }

@@ -15,7 +15,7 @@ import retrofit2.HttpException
 import kotlin.coroutines.cancellation.CancellationException
 
 interface OrderRepository {
-    suspend fun clearCache()
+
     suspend fun getCachedOrders(): Map<Int, OrderDTO>
     suspend fun getOrders():  Map<Int, OrderDTO>
     suspend fun getOrdersNextPage(): Map<Int, OrderDTO>
@@ -31,11 +31,7 @@ class NetworkOrderRepository(
     private var cachedOrders: MutableMap<Int, OrderDTO> = mutableMapOf()
     private val mutex = Mutex()
 
-    override suspend fun clearCache() {
-        mutex.withLock {
-            cachedOrders = mutableMapOf()
-        }
-    }
+
 
     override suspend fun getCachedOrders(): Map<Int, OrderDTO> = mutex.withLock {
         cachedOrders

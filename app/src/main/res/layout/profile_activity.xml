@@ -57,17 +57,6 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="16dp" >
-
-
-            <include layout="@layout/item_order" />
-            <include layout="@layout/item_order" />
-            <include layout="@layout/item_order" />
-            <include layout="@layout/item_order" />
-            <include layout="@layout/item_order" />
-            <include layout="@layout/item_order" />
-            <include layout="@layout/item_order" />
-            <include layout="@layout/item_order" />
-
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>

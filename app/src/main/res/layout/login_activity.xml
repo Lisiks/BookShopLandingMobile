@@ -35,6 +35,7 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="4dp"
         android:layout_marginEnd="24dp"
+        android:maxLength="100"
 
         android:inputType="text"
         android:paddingStart="12dp"
@@ -67,12 +68,13 @@
         android:paddingStart="12dp"
         android:paddingEnd="12dp"
         style="@style/EditTextBasic"
+        android:maxLength="72"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvShopLabel" />
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btnCreateOrder"
+        android:id="@+id/btnLogin"
         style="@style/ButtonBasic"
         android:layout_width="0dp"
         android:layout_height="40dp"

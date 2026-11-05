@@ -101,7 +101,7 @@
         app:layout_constraintTop_toBottomOf="@id/tvRepeatPasswordLabel" />
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btnCreateOrder"
+        android:id="@+id/btnRegister"
         style="@style/ButtonBasic"
         android:layout_width="0dp"
         android:layout_height="40dp"
@@ -115,7 +115,7 @@
         app:layout_constraintTop_toBottomOf="@id/etRepeatPassword" />
 
     <TextView
-        android:id="@+id/tvRegisterLink"
+        android:id="@+id/tvLoginLink"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"

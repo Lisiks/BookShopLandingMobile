@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">BookShopApp</string>
+    <string name="app_name">Книжный мир</string>
     <string name="registerPageS1">Регистрация</string>
     <string name="registerPageS2">Логин:</string>
     <string name="registerPageS3">Пароль:</string>
