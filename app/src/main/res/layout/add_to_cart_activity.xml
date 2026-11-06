@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+
+    <TextView
+        android:id="@+id/tvPageTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
+        style="@style/TextViewHeaderFirst"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Война и мир"/>
+
+    <TextView
+        android:id="@+id/tvPagename"
+        style="@style/TextViewParagraphLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:text="@string/addToCartS1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvPageTitle" />
+
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnMinusOne"
+        style="@style/ButtonBasic"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_margin="24dp"
+        android:layout_marginStart="32dp"
+        android:text="@string/addToCartS2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvPagename" />
+
+
+    <TextView
+        android:id="@+id/tvCount"
+        style="@style/TextViewHeaderThird"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        app:layout_constraintBottom_toBottomOf="@+id/btnMinusOne"
+        app:layout_constraintStart_toEndOf="@+id/btnMinusOne"
+        app:layout_constraintTop_toTopOf="@+id/btnMinusOne"
+        tools:text="1"/>
+
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnPlusOne"
+        style="@style/ButtonBasic"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="24dp"
+
+        android:text="@string/addToCartS3"
+        app:layout_constraintBottom_toBottomOf="@+id/btnMinusOne"
+        app:layout_constraintStart_toEndOf="@+id/tvCount"
+        app:layout_constraintTop_toTopOf="@+id/btnMinusOne" />
+
+
+    <TextView
+        android:id="@+id/tvPrice"
+        style="@style/TextViewHeaderThird"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+
+        app:layout_constraintBottom_toBottomOf="@+id/btnPlusOne"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/btnPlusOne"
+        tools:text="120.00 руб." />
+
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnAddToCart"
+        style="@style/ButtonBasic"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="24dp"
+        android:layout_marginStart="136dp"
+        android:layout_marginBottom="128dp"
+        android:padding="10dp"
+        android:text="@string/addToCartS4"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnBack"
+        style="@style/ButtonAlt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="24dp"
+        android:padding="10dp"
+        android:text="@string/addToCartS5"
+        app:layout_constraintBottom_toBottomOf="@+id/btnAddToCart"
+        app:layout_constraintStart_toEndOf="@+id/btnAddToCart"
+        app:layout_constraintTop_toTopOf="@+id/btnAddToCart" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

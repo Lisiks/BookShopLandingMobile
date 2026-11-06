@@ -2,6 +2,7 @@ package com.example.bookshopapp
 
 
 import android.app.Application
+import com.example.bookshopapp.data.local.CartDataStoreManager
 import com.example.bookshopapp.data.remote.RetrofitClient
 import com.example.bookshopapp.data.repository.BookRepository
 import com.example.bookshopapp.data.repository.CommentRepository
@@ -19,9 +20,13 @@ class BookShopApplication : Application() {
     lateinit var retrofitClient: RetrofitClient
         private set
 
+    lateinit var cartDataStoreManager: CartDataStoreManager
+        private set
+
     override fun onCreate() {
         super.onCreate()
         retrofitClient = RetrofitClient(this)
+        cartDataStoreManager = CartDataStoreManager(this)
     }
 
     val booksRepository: BookRepository by lazy {

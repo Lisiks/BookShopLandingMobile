@@ -3,6 +3,7 @@ package com.example.bookshopapp.ui.CatalogUI
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
@@ -23,7 +24,10 @@ class BookDiffCallback : DiffUtil.ItemCallback<BookDTO>() {
         oldItem == newItem
 }
 
-class BookRecycleViewAdapter : ListAdapter<BookDTO, BookRecycleViewAdapter.ViewHolder>(BookDiffCallback()) {
+class BookRecycleViewAdapter(
+    private val onItemClick: (itemId: Int) -> Unit,
+    private val openAddToCartWindow: (bookId: Int, bookTitle: String, bookPrice: Double) -> Unit,
+) : ListAdapter<BookDTO, BookRecycleViewAdapter.ViewHolder>(BookDiffCallback()) {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val tvTitle: TextView = view.findViewById(R.id.tvBookTitle)
@@ -31,6 +35,9 @@ class BookRecycleViewAdapter : ListAdapter<BookDTO, BookRecycleViewAdapter.ViewH
         val tvGenre: TextView = view.findViewById(R.id.tvBookGenre)
         val tvPrice: TextView = view.findViewById(R.id.tvBookPrice)
         val ivImage: ImageView = view.findViewById(R.id.ivBookPhoto)
+
+        val clItem: androidx.constraintlayout.widget.ConstraintLayout = view.findViewById(R.id.clOrderItem)
+        val addToCartBtn: ImageButton = view.findViewById(R.id.btnToCart)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -50,6 +57,14 @@ class BookRecycleViewAdapter : ListAdapter<BookDTO, BookRecycleViewAdapter.ViewH
         val priceString = "${round(currentBook.price * 100) / 100} руб."
         holder.tvPrice.text = priceString
         holder.ivImage.load("http://127.0.0.1:8000/${currentBook.imageFilePath}")
+
+        holder.clItem.setOnClickListener {
+            onItemClick(currentBook.id)
+        }
+
+        holder.addToCartBtn.setOnClickListener {
+            openAddToCartWindow(currentBook.id, currentBook.title, currentBook.price)
+        }
     }
 
 }

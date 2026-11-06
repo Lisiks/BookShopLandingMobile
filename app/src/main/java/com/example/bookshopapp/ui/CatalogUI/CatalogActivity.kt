@@ -3,6 +3,7 @@ package com.example.bookshopapp.ui.CatalogUI
 import android.content.Intent
 import android.os.Bundle
 import android.view.inputmethod.EditorInfo
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -14,6 +15,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.bookshopapp.R
 import com.example.bookshopapp.databinding.CartActivityBinding
 import com.example.bookshopapp.databinding.CatalogActivityBinding
+import com.example.bookshopapp.ui.AddCartActivity.AddCartActivity
+import com.example.bookshopapp.ui.BookUI.BookActivity
 import com.example.bookshopapp.ui.ProfileUI.ProfileActivity
 import com.example.bookshopapp.ui.login.CatalogViewModel
 import com.example.bookshopapp.ui.login.LoginViewModel
@@ -69,7 +72,23 @@ class CatalogActivity : AppCompatActivity() {
         val bookRecycleViewLayoutManager = LinearLayoutManager(this)
         binding.llBooks.layoutManager = bookRecycleViewLayoutManager
 
-        val bookAdapter = BookRecycleViewAdapter()
+
+        val bookAdapter = BookRecycleViewAdapter(
+            { bookId ->
+                            val intent = Intent(this, BookActivity::class.java)
+                            startActivity(intent)
+                        },
+            { bookId, bookTitle, bookPrice ->
+                val intent = Intent(this, AddCartActivity::class.java).apply {
+                    putExtra("bookId", bookId)
+                    putExtra("bookTitle", bookTitle)
+                    putExtra("bookPrice", bookPrice)
+                }
+                startActivity(intent)
+            })
+
+
+
         binding.llBooks.adapter = bookAdapter
 
         viewModel.bookData.observe(this) { bookData ->

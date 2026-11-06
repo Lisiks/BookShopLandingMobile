@@ -30,4 +30,9 @@
     <string name="bookPageS7">Мой комментарий:</string>
     <string name="bookPageS8">Удалить</string>
     <string name="bookPageS9">Все комментарии:</string>
+    <string name="addToCartS1">Добавить в корзину</string>
+    <string name="addToCartS2">-</string>
+    <string name="addToCartS3">+</string>
+    <string name="addToCartS4">Добавить в корзину</string>
+    <string name="addToCartS5">Назад</string>
 </resources>

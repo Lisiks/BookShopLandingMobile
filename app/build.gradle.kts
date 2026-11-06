@@ -58,5 +58,7 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp-urlconnection:4.12.0")
     implementation("net.gotev:cookie-store:1.5.0")
     implementation("io.coil-kt:coil:2.5.0")
+    implementation("androidx.datastore:datastore-preferences:1.1.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.11.0")
 
 }
