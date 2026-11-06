@@ -1,4 +1,4 @@
-package com.example.bookshopapp.ui.ProfileUI
+package com.example.bookshopapp.ui.ProfileFragmentUI
 
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData

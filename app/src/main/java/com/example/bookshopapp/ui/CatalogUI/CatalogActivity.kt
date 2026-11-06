@@ -118,9 +118,13 @@ class CatalogActivity : AppCompatActivity() {
 
         binding.icSearch.setOnClickListener {
             val intent = Intent(this, CatalogActivity::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+            intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
             startActivity(intent)
+        }
 
+        binding.icProfile.setOnClickListener {
+            val intent = Intent(this, ProfileActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
             startActivity(intent)
         }
     }
