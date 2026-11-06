@@ -2,6 +2,7 @@ package com.example.bookshopapp.ui.CatalogUI
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.inputmethod.EditorInfo
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -9,7 +10,9 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.bookshopapp.R
+import com.example.bookshopapp.databinding.CartActivityBinding
 import com.example.bookshopapp.databinding.CatalogActivityBinding
 import com.example.bookshopapp.ui.ProfileUI.ProfileActivity
 import com.example.bookshopapp.ui.login.CatalogViewModel
@@ -24,23 +27,63 @@ class CatalogActivity : AppCompatActivity() {
 
     private val viewModel: CatalogViewModel by viewModels()
 
+
+    class CatalogRecycleScrollEventListener(
+        private val layoutManager: LinearLayoutManager,
+        private val scrollFunc: () -> Unit,
+        private val itemsVisibleToLoad: Int = 1
+    ) : RecyclerView.OnScrollListener() {
+        private var isLoading = false
+
+        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+            if (isLoading) {
+                return
+            }
+
+            super.onScrolled(recyclerView, dx, dy)
+
+            val totalItems = layoutManager.itemCount
+            val lastVisible = layoutManager.findLastVisibleItemPosition()
+
+
+            if (totalItems - lastVisible <= itemsVisibleToLoad) {
+                isLoading = true
+                scrollFunc()
+            }
+        }
+
+        fun setLoading(value: Boolean) {
+            isLoading = value
+        }
+
+
+    }
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = CatalogActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.llBooks.layoutManager = LinearLayoutManager(this)
+
+        val bookRecycleViewLayoutManager = LinearLayoutManager(this)
+        binding.llBooks.layoutManager = bookRecycleViewLayoutManager
+
+        val bookAdapter = BookRecycleViewAdapter()
+        binding.llBooks.adapter = bookAdapter
+
         viewModel.bookData.observe(this) { bookData ->
-            binding.llBooks.adapter = BookRecycleViewAdapter(bookData.values.toList())
+           bookAdapter.submitList(bookData.values.toList())
         }
 
-        binding.svBooks.setOnScrollChangeListener { v: NestedScrollView, scrollX, scrollY, oldScrollX, oldScrollY ->
-            if (scrollY == (v.getChildAt(0).measuredHeight - v.measuredHeight)) {
-                viewModel.getNextPageBooks()
-                println("Событие сработало")
-            }
-        }
 
+        val catalogRecycleScrollViewEventListener = CatalogRecycleScrollEventListener(
+            bookRecycleViewLayoutManager,
+            viewModel::getNextPageBooks,
+            3
+        )
+
+        binding.llBooks.addOnScrollListener(catalogRecycleScrollViewEventListener)
 
 
         viewModel.error.observe(this) { message ->
@@ -50,22 +93,42 @@ class CatalogActivity : AppCompatActivity() {
             }
         }
 
-        viewModel.bookFullLoaded.observe(this) {isFullLoaded ->
-            if (isFullLoaded) {
-                println("Событие отменено")
-                binding.svBooks.setOnScrollChangeListener(null as NestedScrollView.OnScrollChangeListener?)
+        viewModel.loading.observe(this) { isLoading ->
+            binding.etSearch.isEnabled = !isLoading
+            binding.btnClear.isEnabled = !isLoading
+            catalogRecycleScrollViewEventListener.setLoading(isLoading)
+        }
+
+        viewModel.title.observe(this) { inputTitle ->
+            binding.etSearch.setText(inputTitle)
+        }
+
+        binding.etSearch.setOnFocusChangeListener { v, hasFocus ->
+            if (!hasFocus) {
+                viewModel.getFirstBookPage(binding.etSearch.text.toString())
             }
         }
 
 
-        binding.icSearch.setOnClickListener {
-            startActivity(Intent(this, CatalogActivity::class.java))
-            finish()
+        binding.btnClear.setOnClickListener {
+            binding.etSearch.setText("")
+            viewModel.getFirstBookPage()
         }
 
-        binding.icProfile.setOnClickListener {
-            startActivity(Intent(this, ProfileActivity::class.java))
-            finish()
+
+        binding.icSearch.setOnClickListener {
+            val intent = Intent(this, CatalogActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+            startActivity(intent)
+
+            startActivity(intent)
         }
     }
+
+    override fun onDestroy() {
+        _binding?.llBooks?.clearOnScrollListeners()
+        _binding = null
+        super.onDestroy()
+    }
+
 }

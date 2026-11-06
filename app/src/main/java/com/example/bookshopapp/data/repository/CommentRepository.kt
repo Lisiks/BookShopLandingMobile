@@ -23,13 +23,13 @@ interface CommentRepository {
 }
 
 class NetworkCommentRepository(
-    private  val commentApiService: CommentApiService
+    private  val _commentApiService: CommentApiService
 ): CommentRepository {
-    val mutex = Mutex()
+    private val _mutex = Mutex()
 
-    override suspend fun getComments(bookId: Int): List<CommentDTO> = mutex.withLock {
+    override suspend fun getComments(bookId: Int): List<CommentDTO> = _mutex.withLock {
         try {
-            commentApiService.getComments(bookId)
+            _commentApiService.getComments(bookId)
         } catch (e: CancellationException) {
             throw e
         } catch (e: IOException) {
@@ -49,9 +49,9 @@ class NetworkCommentRepository(
 
 
 
-    override suspend fun getCommentMe(bookId: Int): CommentDTO = mutex.withLock {
+    override suspend fun getCommentMe(bookId: Int): CommentDTO = _mutex.withLock {
         try {
-            commentApiService.getCommentMe(bookId)
+            _commentApiService.getCommentMe(bookId)
         } catch (e: CancellationException) {
             throw e
         } catch (e: IOException) {
@@ -73,10 +73,10 @@ class NetworkCommentRepository(
 
 
     override suspend fun createComment(bookId: Int, text: String) {
-        mutex.withLock {
+        _mutex.withLock {
 
             try {
-                commentApiService.createComment(bookId, text)
+                _commentApiService.createComment(bookId, text)
             } catch (e: CancellationException) {
                 throw e
             } catch (e: IOException) {
@@ -98,9 +98,9 @@ class NetworkCommentRepository(
     }
 
     override suspend fun deleteComment(bookId: Int) {
-        mutex.withLock {
+        _mutex.withLock {
             try {
-                commentApiService.deleteComment(bookId)
+                _commentApiService.deleteComment(bookId)
             } catch (e: CancellationException) {
                 throw e
             } catch (e: IOException) {

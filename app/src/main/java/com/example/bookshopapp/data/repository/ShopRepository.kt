@@ -16,21 +16,21 @@ interface ShopRepository {
 
 
 class NetworkShopsRepository(
-    private val shopApiService: ShopApiService
+    private val _shopApiService: ShopApiService
 ) : ShopRepository {
-    private var cachedShops: Map<Int, ShopDTO> = mapOf()
-    private val mutex = Mutex()
+    private var _cachedShops: Map<Int, ShopDTO> = mapOf()
+    private val _mutex = Mutex()
 
-    override suspend fun getShops(): Map<Int, ShopDTO> = mutex.withLock {
-        val cache = cachedShops
+    override suspend fun getShops(): Map<Int, ShopDTO> = _mutex.withLock {
+        val cache = _cachedShops
 
         if (cache.isNotEmpty()) {
             cache
         } else {
 
             try {
-                val responseResult = shopApiService.getShops()
-                cachedShops = responseResult
+                val responseResult = _shopApiService.getShops()
+                _cachedShops = responseResult
                 responseResult
             } catch (e: CancellationException) {
                 throw e

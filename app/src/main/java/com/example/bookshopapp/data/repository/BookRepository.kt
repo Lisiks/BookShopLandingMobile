@@ -17,16 +17,10 @@ import kotlin.coroutines.cancellation.CancellationException
 
 interface BookRepository {
 
-    val pageIsLastValue: Boolean
+    val title: String?
+    val pageIsLast: Boolean
 
-    suspend fun getCachedBooks(): Map<Int, BookDTO>
-    suspend fun getBooks(
-        curTitle: String? = null,
-        curMaxPrice: Double? = null,
-        curMinPrice: Double? = null,
-        curGenreId: Int? = null,
-        curAuthorId: Int? = null
-    ): Map<Int, BookDTO>
+    suspend fun getBooks(curTitle: String? = null): Map<Int, BookDTO>
     suspend fun getBooksNextPage(): Map<Int, BookDTO>
     suspend fun getBookById(bookId: Int): BookDTO
     suspend fun getBookByList(bookIdsList: List<Int>):  Map<Int, BookDTO>
@@ -34,71 +28,36 @@ interface BookRepository {
 
 
 class NetworkBookRepository(
-    private val bookApiService: BookApiService
+    private val _bookApiService: BookApiService
 ) : BookRepository {
-    private var cachedBooks: MutableMap<Int, BookDTO> = mutableMapOf()
-    private val mutex = Mutex()
+    private val _mutex = Mutex()
 
-    private var page: Int = 0
-    private var pageIsLast = false
+    private var _page: Int = 0
+    private var _pageIsLast = false
 
-    override val pageIsLastValue
-        get() = pageIsLast
+    override val pageIsLast: Boolean
+        get() = _pageIsLast
 
+    private var _title: String? = null
 
-    var title: String? = null
-        private set
-    var maxPrice: Double? = null
-        private set
-
-   var minPrice: Double? = null
-        private set
-
-    var genreId: Int? = null
-        private set
-
-    var authorId: Int? = null
-        private set
-
-
-    override suspend fun getCachedBooks(): Map<Int, BookDTO> = mutex.withLock {
-        return cachedBooks
-    }
+    override val title: String?
+        get() = _title
 
     override suspend fun getBooks(
         curTitle: String?,
-        curMaxPrice: Double?,
-        curMinPrice: Double?,
-        curGenreId: Int?,
-        curAuthorId: Int?
-    ): Map<Int, BookDTO> = mutex.withLock {
+    ): Map<Int, BookDTO> = _mutex.withLock {
 
-        if (curMaxPrice != null && (curMaxPrice !in 0.0..99999999.99)) {
-            throw IllegalArgumentException("MaxPrice must be in range 0.0..99999999.99")
-        }
-
-        if (curMinPrice != null && (curMinPrice !in 0.0..99999999.99)) {
-            throw IllegalArgumentException("MinPrice must be in range 0.0..99999999.99")
-        }
-
-        title = curTitle
-        maxPrice = curMaxPrice
-        minPrice = curMinPrice
-        genreId = curGenreId
-        authorId = curAuthorId
-
-        cachedBooks = mutableMapOf()
-        page = 0
-        pageIsLast = false
+        _title = curTitle
+        _page = 0
+        _pageIsLast = false
 
         try {
-            val responseResult = bookApiService.getBooks(page, title, minPrice, maxPrice, authorId, genreId)
+            val responseResult = _bookApiService.getBooks(_page, _title)
 
             if (responseResult.isEmpty()) {
-                pageIsLast = true
+                _pageIsLast = true
             }
-            cachedBooks = responseResult.toMutableMap()
-            cachedBooks
+            responseResult
 
         } catch (e: CancellationException) {
             throw e
@@ -110,21 +69,20 @@ class NetworkBookRepository(
 
     }
 
-    override suspend fun getBooksNextPage(): Map<Int, BookDTO> = mutex.withLock {
+    override suspend fun getBooksNextPage(): Map<Int, BookDTO> = _mutex.withLock {
         if (pageIsLast) {
-            cachedBooks
+            mapOf()
         } else {
 
             try {
-                val responseResult = bookApiService.getBooks(page + 1, title, minPrice, maxPrice, authorId, genreId)
+                val responseResult = _bookApiService.getBooks(_page + 1, _title)
                 if (responseResult.isEmpty()) {
-                    pageIsLast = true
+                    _pageIsLast = true
                 } else {
-                    page++
+                    _page++
                 }
 
-                cachedBooks.putAll(responseResult)
-                cachedBooks
+                responseResult
             } catch (e: CancellationException) {
                 throw e
             } catch (e: IOException) {
@@ -136,9 +94,9 @@ class NetworkBookRepository(
         }
     }
 
-    override suspend fun getBookById(bookId: Int): BookDTO = mutex.withLock{
+    override suspend fun getBookById(bookId: Int): BookDTO = _mutex.withLock{
         try {
-            bookApiService.getBookById(bookId)
+            _bookApiService.getBookById(bookId)
         } catch (e: CancellationException) {
             throw e
         } catch (e: HttpException) {
@@ -154,10 +112,10 @@ class NetworkBookRepository(
         }
     }
 
-    override suspend fun getBookByList(bookIdsList: List<Int>): Map<Int, BookDTO> = mutex.withLock {
-        val responseBody = GetBookListDTO(items = bookIdsList)
+    override suspend fun getBookByList(bookIdsList: List<Int>): Map<Int, BookDTO> = _mutex.withLock {
+        val responseBody = GetBookListDTO(bookIdsList)
         try {
-            val responseResult = bookApiService.getBooksByList(responseBody)
+            val responseResult = _bookApiService.getBooksByList(responseBody)
             responseResult
         } catch (e: CancellationException) {
             throw e

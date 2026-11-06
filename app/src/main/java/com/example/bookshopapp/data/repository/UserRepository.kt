@@ -5,7 +5,6 @@ import com.example.bookshopapp.data.ConflictException
 import com.example.bookshopapp.data.IDontKnowWhatsHappenedException
 import com.example.bookshopapp.data.InternetException
 import com.example.bookshopapp.data.LoginException
-import com.example.bookshopapp.data.NotFoundException
 import com.example.bookshopapp.data.remote.api.UserApiService
 import com.example.bookshopapp.data.remote.dto.UserDTO
 import kotlinx.coroutines.sync.Mutex
@@ -22,13 +21,13 @@ interface UserRepository {
 }
 
 class NetworkUserRepository(
-    private val userApiService: UserApiService
+    private val _userApiService: UserApiService
 ) : UserRepository {
-    val mutex = Mutex()
+    private val _mutex = Mutex()
 
-    override suspend fun getUserInfo(): UserDTO = mutex.withLock {
+    override suspend fun getUserInfo(): UserDTO = _mutex.withLock {
         try {
-            val responseResult = userApiService.getUserInfo()
+            val responseResult = _userApiService.getUserInfo()
             responseResult
         } catch (e: CancellationException) {
             throw e
@@ -46,10 +45,10 @@ class NetworkUserRepository(
     }
 
     override suspend fun logout() {
-        mutex.withLock {
+        _mutex.withLock {
 
             try {
-                userApiService.logout()
+                _userApiService.logout()
             } catch (e: CancellationException) {
                 throw e
             } catch (e: IOException) {
@@ -62,7 +61,7 @@ class NetworkUserRepository(
     }
 
     override suspend fun login(username: String, plainPassword: String) {
-        mutex.withLock {
+        _mutex.withLock {
             if (username.length < 6) {
                 throw IllegalArgumentException("Username length must be >= 6")
             }
@@ -73,7 +72,7 @@ class NetworkUserRepository(
 
 
             try {
-                userApiService.login(username, plainPassword)
+                _userApiService.login(username, plainPassword)
             } catch (e: CancellationException) {
                 throw e
             } catch (e: IOException) {
@@ -98,7 +97,7 @@ class NetworkUserRepository(
         plainPassword: String,
         confirmPassword: String
     ) {
-        mutex.withLock {
+        _mutex.withLock {
             if (username.length < 6) {
                 throw IllegalArgumentException("Username length must be >= 6")
             }
@@ -113,7 +112,7 @@ class NetworkUserRepository(
 
 
             try {
-                userApiService.register(username, plainPassword)
+                _userApiService.register(username, plainPassword)
             } catch (e: CancellationException) {
                 throw e
             } catch (e: IOException) {

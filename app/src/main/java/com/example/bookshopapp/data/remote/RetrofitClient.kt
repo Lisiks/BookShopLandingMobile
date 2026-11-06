@@ -1,10 +1,8 @@
 package com.example.bookshopapp.data.remote
 
 import android.content.Context
-import com.example.bookshopapp.data.remote.api.AuthorApiService
 import com.example.bookshopapp.data.remote.api.BookApiService
 import com.example.bookshopapp.data.remote.api.CommentApiService
-import com.example.bookshopapp.data.remote.api.GenreApiService
 import com.example.bookshopapp.data.remote.api.OrderApiService
 import com.example.bookshopapp.data.remote.api.ShopApiService
 import com.example.bookshopapp.data.remote.api.UserApiService
@@ -19,7 +17,6 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import java.net.CookieManager
 import java.net.CookiePolicy
-import java.net.Proxy
 import java.util.concurrent.TimeUnit
 import net.gotev.cookiestore.SharedPreferencesCookieStore
 
@@ -66,10 +63,8 @@ class RetrofitClient(
 
 
     val userApi: UserApiService by lazy { retrofit.create(UserApiService::class.java) }
-    val authorApi: AuthorApiService by lazy { retrofit.create(AuthorApiService::class.java) }
     val bookApi: BookApiService by lazy { retrofit.create(BookApiService::class.java) }
     val commentApi: CommentApiService by lazy { retrofit.create(CommentApiService::class.java) }
-    val genreApi: GenreApiService by lazy { retrofit.create(GenreApiService::class.java) }
     val shopApi: ShopApiService by lazy { retrofit.create(ShopApiService::class.java) }
     val orderApi: OrderApiService by lazy { retrofit.create(OrderApiService::class.java) }
 }

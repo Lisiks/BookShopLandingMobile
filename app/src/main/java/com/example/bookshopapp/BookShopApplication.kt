@@ -3,14 +3,10 @@ package com.example.bookshopapp
 
 import android.app.Application
 import com.example.bookshopapp.data.remote.RetrofitClient
-import com.example.bookshopapp.data.repository.AuthorRepository
 import com.example.bookshopapp.data.repository.BookRepository
 import com.example.bookshopapp.data.repository.CommentRepository
-import com.example.bookshopapp.data.repository.GenreRepository
-import com.example.bookshopapp.data.repository.NetworkAuthorRepository
 import com.example.bookshopapp.data.repository.NetworkBookRepository
 import com.example.bookshopapp.data.repository.NetworkCommentRepository
-import com.example.bookshopapp.data.repository.NetworkGenreRepository
 import com.example.bookshopapp.data.repository.NetworkOrderRepository
 import com.example.bookshopapp.data.repository.NetworkShopsRepository
 import com.example.bookshopapp.data.repository.NetworkUserRepository
@@ -28,21 +24,12 @@ class BookShopApplication : Application() {
         retrofitClient = RetrofitClient(this)
     }
 
-
-    val authorsRepository: AuthorRepository by lazy {
-        NetworkAuthorRepository(retrofitClient.authorApi)
-    }
-
     val booksRepository: BookRepository by lazy {
         NetworkBookRepository(retrofitClient.bookApi)
     }
 
     val commentsRepository: CommentRepository by lazy {
         NetworkCommentRepository(retrofitClient.commentApi)
-    }
-
-    val genresRepository: GenreRepository by lazy {
-        NetworkGenreRepository(retrofitClient.genreApi)
     }
 
     val usersRepository: UserRepository by lazy {

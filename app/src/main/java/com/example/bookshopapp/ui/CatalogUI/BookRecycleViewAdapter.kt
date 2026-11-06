@@ -5,6 +5,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.example.bookshopapp.R
@@ -12,9 +14,16 @@ import com.example.bookshopapp.data.remote.dto.BookDTO
 import org.w3c.dom.Text
 import kotlin.math.round
 
-class BookRecycleViewAdapter(
-    private val bookList: List<BookDTO>
-) : RecyclerView.Adapter<BookRecycleViewAdapter.ViewHolder>() {
+
+class BookDiffCallback : DiffUtil.ItemCallback<BookDTO>() {
+    override fun areItemsTheSame(oldItem: BookDTO, newItem: BookDTO): Boolean =
+        oldItem.id == newItem.id
+
+    override fun areContentsTheSame(oldItem: BookDTO, newItem: BookDTO): Boolean =
+        oldItem == newItem
+}
+
+class BookRecycleViewAdapter : ListAdapter<BookDTO, BookRecycleViewAdapter.ViewHolder>(BookDiffCallback()) {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val tvTitle: TextView = view.findViewById(R.id.tvBookTitle)
@@ -31,16 +40,16 @@ class BookRecycleViewAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.tvTitle.text = bookList[position].title
+        val currentBook = getItem(position)
+        holder.tvTitle.text = currentBook.title
 
-        val authorString = "${bookList[position].author.f} ${bookList[position].author.i[0]}. ${bookList[position].author.o[0]}."
+        val authorString = "${currentBook.author.f} ${currentBook.author.i[0]}. ${currentBook.author.o[0]}."
         holder.tvAuthor.text = authorString
-        holder.tvGenre.text = bookList[position].genre.name
+        holder.tvGenre.text = currentBook.genre.name
 
-        val priceString = "${round(bookList[position].price * 100) / 100} руб."
+        val priceString = "${round(currentBook.price * 100) / 100} руб."
         holder.tvPrice.text = priceString
-        holder.ivImage.load("http://127.0.0.1:8000/${bookList[position].imageFilePath}")
+        holder.ivImage.load("http://127.0.0.1:8000/${currentBook.imageFilePath}")
     }
 
-    override fun getItemCount() = bookList.size
 }

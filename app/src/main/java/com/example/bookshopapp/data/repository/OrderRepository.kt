@@ -15,7 +15,7 @@ import retrofit2.HttpException
 import kotlin.coroutines.cancellation.CancellationException
 
 interface OrderRepository {
-
+    val pageIsLast: Boolean
     suspend fun getCachedOrders(): Map<Int, OrderDTO>
     suspend fun getOrders():  Map<Int, OrderDTO>
     suspend fun getOrdersNextPage(): Map<Int, OrderDTO>
@@ -24,33 +24,37 @@ interface OrderRepository {
 
 
 class NetworkOrderRepository(
-    private val orderApiService: OrderApiService
+    private val _orderApiService: OrderApiService
 ) : OrderRepository {
-    private var page = 0
-    private var pageIsLast = false
-    private var cachedOrders: MutableMap<Int, OrderDTO> = mutableMapOf()
-    private val mutex = Mutex()
+    private var _page = 0
+    private var _pageIsLast = false
+
+    override val pageIsLast: Boolean
+        get() = _pageIsLast
+
+    private var _cachedOrders: MutableMap<Int, OrderDTO> = mutableMapOf()
+    private val _mutex = Mutex()
 
 
 
-    override suspend fun getCachedOrders(): Map<Int, OrderDTO> = mutex.withLock {
-        cachedOrders
+    override suspend fun getCachedOrders(): Map<Int, OrderDTO> = _mutex.withLock {
+        _cachedOrders
     }
 
-    override suspend fun getOrders(): Map<Int, OrderDTO> = mutex.withLock {
-        page = 0
-        pageIsLast = false
+    override suspend fun getOrders(): Map<Int, OrderDTO> = _mutex.withLock {
+        _page = 0
+        _pageIsLast = false
 
 
         try {
-            val responseResult = orderApiService.getOrders(page)
+            val responseResult = _orderApiService.getOrders(_page)
 
             if (responseResult.isEmpty()) {
-                pageIsLast = true
+                _pageIsLast = true
             }
 
-            cachedOrders = responseResult.toMutableMap()
-            cachedOrders
+            _cachedOrders = responseResult.toMutableMap()
+            _cachedOrders
 
         } catch (e: CancellationException) {
             throw e
@@ -68,23 +72,23 @@ class NetworkOrderRepository(
 
     }
 
-    override suspend fun getOrdersNextPage(): Map<Int, OrderDTO> = mutex.withLock {
-        if (pageIsLast) {
-            cachedOrders
+    override suspend fun getOrdersNextPage(): Map<Int, OrderDTO> = _mutex.withLock {
+        if (_pageIsLast) {
+            _cachedOrders
         } else {
 
 
             try {
-                val responseResult = orderApiService.getOrders(page++)
+                val responseResult = _orderApiService.getOrders(_page++)
 
                 if (responseResult.isEmpty()) {
-                    pageIsLast = true
+                    _pageIsLast = true
                 } else {
-                    page++
+                    _page++
                 }
 
-                cachedOrders.putAll(responseResult)
-                cachedOrders
+                _cachedOrders.putAll(responseResult)
+                _cachedOrders
 
             } catch (e: CancellationException) {
                 throw e
@@ -103,7 +107,7 @@ class NetworkOrderRepository(
     }
 
     override suspend fun createOrder(shopId: Int, bookCartData: List<Map<String, Int>>) {
-        mutex.withLock {
+        _mutex.withLock {
             if (bookCartData.size !in 1..10) {
                 throw IllegalArgumentException("Cart must include at least 1 and not than 10 elements")
             }
@@ -111,7 +115,7 @@ class NetworkOrderRepository(
 
             try {
                 val responseBody = OrderPostDTO(shopId, bookCartData)
-                orderApiService.createOrder(responseBody)
+                _orderApiService.createOrder(responseBody)
 
             } catch (e: CancellationException) {
                 throw e
@@ -132,6 +136,4 @@ class NetworkOrderRepository(
 
         }
     }
-
-
 }

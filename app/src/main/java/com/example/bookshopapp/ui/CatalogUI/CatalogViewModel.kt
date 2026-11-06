@@ -23,21 +23,40 @@ class CatalogViewModel (application: Application): AndroidViewModel(application)
     private val _error = MutableLiveData<String?>(null)
     private var _bookData = MutableLiveData<Map<Int, BookDTO>>(mapOf())
 
+    private var _title = MutableLiveData<String?>(repository.title)
+
     private val _bookFullLoaded = MutableLiveData<Boolean>(false)
 
     val loading: LiveData<Boolean> = _loading
     val error: LiveData<String?> = _error
     val bookData: LiveData<Map<Int, BookDTO>> = _bookData
     val bookFullLoaded: LiveData<Boolean> = _bookFullLoaded
- 
+    val title: LiveData<String?> = _title
 
 
     init {
         viewModelScope.launch {
             _loading.value = true
             try {
-                val bookData = repository.getBooks()
-                _bookData.value = bookData
+
+                val bookData = repository.getBooks(_title.value)
+                _bookData.value = bookData.toMutableMap()
+
+            } catch (e: InternetException) {
+                _error.value = "Ошибка подключения к сети. Проверьте соединение с интернетом"
+            } finally {
+                _loading.value = false
+            }
+        }
+    }
+
+    fun getFirstBookPage(title: String? = null) {
+        viewModelScope.launch {
+            _loading.value = true
+            try {
+                _title.value = title
+                val bookData = repository.getBooks( _title.value)
+                _bookData.value = bookData.toMutableMap()
 
             } catch (e: InternetException) {
                 _error.value = "Ошибка подключения к сети. Проверьте соединение с интернетом"
@@ -49,22 +68,13 @@ class CatalogViewModel (application: Application): AndroidViewModel(application)
 
     fun getNextPageBooks() {
         viewModelScope.launch {
-            if (_loading.value ?: false) {
-                return@launch
-            }
+
 
             _loading.value = true
             try {
                 val bookData = repository.getBooksNextPage()
-                println(repository.pageIsLastValue)
-                if (repository.pageIsLastValue) {
-                    println("Киниги переполнены")
-                    _bookFullLoaded.value = true
-                } else {
-                    _bookData.value = bookData
-                }
 
-
+                _bookData.value = _bookData.value!! + bookData
 
             } catch (e: InternetException) {
                 _error.value = "Ошибка подключения к сети. Проверьте соединение с интернетом"
