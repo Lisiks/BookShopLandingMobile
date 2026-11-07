@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- Заголовок -->
+
     <TextView
         android:id="@+id/tvPageTitle"
         android:layout_width="wrap_content"
@@ -41,7 +41,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvOrderSum" />
 
-    <AutoCompleteTextView
+    <Spinner
         android:id="@+id/actvShop"
         android:layout_width="0dp"
         android:layout_height="40dp"
@@ -55,13 +55,12 @@
         android:inputType="text"
         android:paddingStart="12dp"
         android:paddingEnd="12dp"
-
+        android:spinnerMode="dropdown"
         style="@style/EditTextBasic"
 
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvShopLabel" />
-
 
 
     <androidx.appcompat.widget.AppCompatButton
@@ -73,7 +72,7 @@
 
         android:padding="10dp"
         android:text="@string/createOrderS3"
-        app:layout_constraintBottom_toTopOf="@+id/bottomBar"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <androidx.appcompat.widget.AppCompatButton
@@ -87,53 +86,6 @@
         app:layout_constraintBottom_toBottomOf="@+id/btnCreateOrder"
         app:layout_constraintStart_toEndOf="@+id/btnCreateOrder"
         app:layout_constraintTop_toTopOf="@+id/btnCreateOrder" />
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/bottomBar"
-        android:layout_width="0dp"
-        android:layout_height="78dp"
-        style="@style/NavigatePanel"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-
-        <ImageButton
-            android:id="@+id/icSearch"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            style="@style/ImageButtonSearch"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/icProfile"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-
-        <ImageButton
-            android:id="@+id/icProfile"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            style="@style/ImageButtonProfile"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-
-        <ImageButton
-            android:id="@+id/icCart"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            style="@style/ImageButtonCart"
-
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/icProfile"
-            app:layout_constraintTop_toTopOf="parent" />
-
-
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

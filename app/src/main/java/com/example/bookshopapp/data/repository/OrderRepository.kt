@@ -112,7 +112,6 @@ class NetworkOrderRepository(
                 throw IllegalArgumentException("Cart must include at least 1 and not than 10 elements")
             }
 
-
             try {
                 val responseBody = OrderPostDTO(shopId, bookCartData)
                 _orderApiService.createOrder(responseBody)
@@ -122,7 +121,7 @@ class NetworkOrderRepository(
             } catch (e: IOException) {
                 throw InternetException("Bad internet")
             } catch (e: HttpException) {
-                if (e.code() == 403) {
+                if (e.code() == 401) {
                     throw AuthException("You are unathorize")
                 } else if (e.code() == 404) {
                     throw NotFoundException("Some books are not found")
@@ -131,6 +130,7 @@ class NetworkOrderRepository(
                     throw IDontKnowWhatsHappenedException("IDK")
                 }
             } catch (e: Exception) {
+                println(e.message)
                 throw IDontKnowWhatsHappenedException("IDK")
             }
 

@@ -41,6 +41,10 @@
             android:name=".ui.CartUI.CartActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".ui.CreateOrderUI.CreateOrderActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
     </application>
 
 </manifest>

@@ -12,6 +12,7 @@ import com.example.bookshopapp.R
 import com.example.bookshopapp.databinding.AddToCartActivityBinding
 import com.example.bookshopapp.databinding.CartActivityBinding
 import com.example.bookshopapp.ui.CatalogUI.CatalogActivity
+import com.example.bookshopapp.ui.CreateOrderUI.CreateOrderActivity
 import com.example.bookshopapp.ui.ProfileUI.ProfileActivity
 import com.example.bookshopapp.ui.login.CatalogViewModel
 import com.google.android.material.snackbar.Snackbar
@@ -60,6 +61,17 @@ class CartActivity : AppCompatActivity() {
 
         binding.btnClear.setOnClickListener {
             viewModel.clearCartData()
+        }
+
+        binding.btnCreateOrder.setOnClickListener {
+            if ((viewModel.bookCartDataMap.value?.size ?: 0) == 0) {
+                Snackbar.make(binding.root, "Для оформления заказа необходимо добавить хотя бы один товар", Snackbar.LENGTH_LONG).show()
+            } else {
+                val intent = Intent(this, CreateOrderActivity::class.java)
+                startActivity(intent)
+            }
+
+
         }
 
         binding.icSearch.setOnClickListener {
