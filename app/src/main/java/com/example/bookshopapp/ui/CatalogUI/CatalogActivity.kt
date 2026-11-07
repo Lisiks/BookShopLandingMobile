@@ -37,12 +37,8 @@ class CatalogActivity : AppCompatActivity() {
         private val scrollFunc: () -> Unit,
         private val itemsVisibleToLoad: Int = 1
     ) : RecyclerView.OnScrollListener() {
-        private var isLoading = false
 
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-            if (isLoading) {
-                return
-            }
 
             super.onScrolled(recyclerView, dx, dy)
 
@@ -51,16 +47,9 @@ class CatalogActivity : AppCompatActivity() {
 
 
             if (totalItems - lastVisible <= itemsVisibleToLoad) {
-                isLoading = true
                 scrollFunc()
             }
         }
-
-        fun setLoading(value: Boolean) {
-            isLoading = value
-        }
-
-
     }
 
 
@@ -116,7 +105,6 @@ class CatalogActivity : AppCompatActivity() {
         viewModel.loading.observe(this) { isLoading ->
             binding.etSearch.isEnabled = !isLoading
             binding.btnClear.isEnabled = !isLoading
-            catalogRecycleScrollViewEventListener.setLoading(isLoading)
         }
 
         viewModel.title.observe(this) { inputTitle ->

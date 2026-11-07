@@ -15,8 +15,7 @@ import retrofit2.HttpException
 import kotlin.coroutines.cancellation.CancellationException
 
 interface OrderRepository {
-    val pageIsLast: Boolean
-    suspend fun getCachedOrders(): Map<Int, OrderDTO>
+
     suspend fun getOrders():  Map<Int, OrderDTO>
     suspend fun getOrdersNextPage(): Map<Int, OrderDTO>
     suspend fun createOrder(shopId: Int, bookCartData: List<Map<String, Int>>)
@@ -29,17 +28,8 @@ class NetworkOrderRepository(
     private var _page = 0
     private var _pageIsLast = false
 
-    override val pageIsLast: Boolean
-        get() = _pageIsLast
-
-    private var _cachedOrders: MutableMap<Int, OrderDTO> = mutableMapOf()
     private val _mutex = Mutex()
 
-
-
-    override suspend fun getCachedOrders(): Map<Int, OrderDTO> = _mutex.withLock {
-        _cachedOrders
-    }
 
     override suspend fun getOrders(): Map<Int, OrderDTO> = _mutex.withLock {
         _page = 0
@@ -53,8 +43,7 @@ class NetworkOrderRepository(
                 _pageIsLast = true
             }
 
-            _cachedOrders = responseResult.toMutableMap()
-            _cachedOrders
+             responseResult
 
         } catch (e: CancellationException) {
             throw e
@@ -74,12 +63,10 @@ class NetworkOrderRepository(
 
     override suspend fun getOrdersNextPage(): Map<Int, OrderDTO> = _mutex.withLock {
         if (_pageIsLast) {
-            _cachedOrders
+            mapOf()
         } else {
-
-
             try {
-                val responseResult = _orderApiService.getOrders(_page++)
+                val responseResult = _orderApiService.getOrders(_page + 1)
 
                 if (responseResult.isEmpty()) {
                     _pageIsLast = true
@@ -87,8 +74,8 @@ class NetworkOrderRepository(
                     _page++
                 }
 
-                _cachedOrders.putAll(responseResult)
-                _cachedOrders
+                responseResult
+
 
             } catch (e: CancellationException) {
                 throw e
@@ -104,6 +91,8 @@ class NetworkOrderRepository(
                 throw IDontKnowWhatsHappenedException("IDK")
             }
         }
+
+
     }
 
     override suspend fun createOrder(shopId: Int, bookCartData: List<Map<String, Int>>) {

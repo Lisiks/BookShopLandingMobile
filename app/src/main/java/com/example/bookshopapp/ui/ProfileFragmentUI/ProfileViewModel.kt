@@ -6,10 +6,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.bookshopapp.BookShopApplication
 import com.example.bookshopapp.data.AuthException
-import com.example.bookshopapp.data.IDontKnowWhatsHappenedException
 import com.example.bookshopapp.data.InternetException
-import com.example.bookshopapp.data.LoginException
+import com.example.bookshopapp.data.remote.dto.OrderDTO
 import com.example.bookshopapp.data.remote.dto.UserDTO
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 
@@ -20,38 +20,75 @@ class ProfileViewModel (application: android.app.Application): AndroidViewModel(
     private val _userData = MutableLiveData<UserDTO?>(null)
     private val _error = MutableLiveData<String?>(null)
     private val _userIsAnAthorise = MutableLiveData(false)
-    private val _logoutIsLoading = MutableLiveData(false)
-    private val _orderDataIsLoading = MutableLiveData(false)
+    private val _profileLoading = MutableLiveData(false)
+    private val _orderDataLoading = MutableLiveData(false)
 
-    init {
+    private val _orderData = MutableLiveData<Map<Int, OrderDTO>>(mapOf())
+
+    val error: LiveData<String?> = _error
+    val profileLoading: LiveData<Boolean> = _profileLoading
+
+    val userData: LiveData<UserDTO?> = _userData
+    val userIsAnAthorise: LiveData<Boolean> = _userIsAnAthorise
+
+    val orderData: LiveData<Map<Int, OrderDTO>> = _orderData
+    val orderDataLoading: LiveData<Boolean> = _orderDataLoading
+
+
+
+    fun loadUserData() {
         viewModelScope.launch {
+            _orderDataLoading.value = true
             try {
-                _userData.value = userRepository.getUserInfo()
+                val orderDataDeferred = async { orderRepository.getOrders() }
+                val userDataDeferred = async { userRepository.getUserInfo() }
+
+                _userData.value = userDataDeferred.await()
+                _orderData.value = orderDataDeferred.await()
+
             } catch (e: InternetException) {
                 _error.value = "Ошибка подключения к сети. Проверьте соединение с интернетом"
             } catch (e: AuthException) {
                 _userIsAnAthorise.value = true
+            } finally {
+
+                _orderDataLoading.value = false
             }
         }
     }
 
-    val error: LiveData<String?> = _error
-    val logoutLoading: LiveData<Boolean> = _logoutIsLoading
-    val orderDataIsLoading: LiveData<Boolean> = _orderDataIsLoading
-    val userData: LiveData<UserDTO?> = _userData
-    val userIsAnAthorise: LiveData<Boolean> = _userIsAnAthorise
+    fun loadOrderNextPage() {
+        if ((_orderDataLoading.value ?: false)) {
+            return
+        }
+
+        viewModelScope.launch {
+            _orderDataLoading.value = true
+            try {
+                val orderData = orderRepository.getOrdersNextPage()
+                _orderData.value = (_orderData.value ?: mapOf()) + orderData
+
+            } catch (e: InternetException) {
+                _error.value = "Ошибка подключения к сети. Проверьте соединение с интернетом"
+            }catch (e: AuthException) {
+                    _userIsAnAthorise.value = true
+            } finally {
+                _orderDataLoading.value = false
+            }
+        }
+    }
 
 
     fun logout() {
         viewModelScope.launch {
-            _logoutIsLoading.value = true
+            _profileLoading.value = true
             try {
                 userRepository.logout()
                 _userIsAnAthorise.value = true
             } catch (e: InternetException) {
                 _error.value = "Ошибка подключения к сети. Проверьте соединение с интернетом"
             } finally {
-                _logoutIsLoading.value = false
+                _profileLoading.value = false
             }
         }
     }

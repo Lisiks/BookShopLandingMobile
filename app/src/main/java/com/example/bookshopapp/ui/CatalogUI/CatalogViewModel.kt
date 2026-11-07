@@ -25,12 +25,11 @@ class CatalogViewModel (application: Application): AndroidViewModel(application)
 
     private var _title = MutableLiveData<String?>(repository.title)
 
-    private val _bookFullLoaded = MutableLiveData<Boolean>(false)
 
     val loading: LiveData<Boolean> = _loading
     val error: LiveData<String?> = _error
     val bookData: LiveData<Map<Int, BookDTO>> = _bookData
-    val bookFullLoaded: LiveData<Boolean> = _bookFullLoaded
+
     val title: LiveData<String?> = _title
 
 
@@ -67,6 +66,10 @@ class CatalogViewModel (application: Application): AndroidViewModel(application)
     }
 
     fun getNextPageBooks() {
+        if ((_loading.value ?: false)) {
+            return
+        }
+
         viewModelScope.launch {
 
 

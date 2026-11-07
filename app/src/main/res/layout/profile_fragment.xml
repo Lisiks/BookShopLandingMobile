@@ -39,9 +39,8 @@
         app:layout_constraintTop_toTopOf="@+id/tvUsername" />
 
 
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/svOrders"
-        style="@style/ContainerBasic"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rwOrders"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_margin="24dp"
@@ -51,18 +50,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvUsername">
-
-
-        <LinearLayout
-            android:id="@+id/llOrders"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
-
-        </LinearLayout>
-
-    </androidx.core.widget.NestedScrollView>
+    </androidx.recyclerview.widget.RecyclerView>
 
 
 
