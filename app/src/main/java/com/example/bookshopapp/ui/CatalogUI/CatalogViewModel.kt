@@ -74,7 +74,7 @@ class CatalogViewModel (application: Application): AndroidViewModel(application)
             try {
                 val bookData = repository.getBooksNextPage()
 
-                _bookData.value = _bookData.value!! + bookData
+                _bookData.value = (_bookData.value ?: mutableMapOf()) + bookData
 
             } catch (e: InternetException) {
                 _error.value = "Ошибка подключения к сети. Проверьте соединение с интернетом"

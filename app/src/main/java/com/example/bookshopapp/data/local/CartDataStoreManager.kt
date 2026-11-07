@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import com.example.bookshopapp.data.CartException
 import kotlinx.coroutines.flow.first
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -24,10 +25,21 @@ class CartDataStoreManager(context: Context) {
     }
 
     suspend fun addCartItem(itemId: Int, itemCount: Int) {
+        if (itemCount < 1) {
+            throw CartException("Item count must be greater than 0")
+        }
+
         val preferences = dataStore.data.first()
         val savedCartData = preferences[cartKey]
         val cartMap: MutableMap<Int, Int> = Json.decodeFromString(savedCartData ?: "{}")
+
+        if (cartMap.size >= 10 && itemId !in cartMap.keys) {
+            throw CartException("Max cart items limit is 10")
+        }
+
         cartMap[itemId] = (cartMap[itemId] ?: 0) + itemCount
+
+
 
         dataStore.edit { prefs ->
             val jsonString: String = Json.encodeToString(cartMap)
@@ -42,9 +54,7 @@ class CartDataStoreManager(context: Context) {
         val savedCartData = preferences[cartKey]
         val cartMap: MutableMap<Int, Int> = Json.decodeFromString(savedCartData ?: "{}")
 
-        if (itemId in cartMap.keys) {
-            cartMap.remove(itemId)
-        }
+        cartMap.remove(itemId)
 
         dataStore.edit { prefs ->
             val jsonString: String = Json.encodeToString(cartMap)
@@ -58,11 +68,7 @@ class CartDataStoreManager(context: Context) {
         val savedCartData = preferences[cartKey]
         val cartMap: MutableMap<Int, Int> = Json.decodeFromString(savedCartData ?: "{}")
 
-        itemIdList.forEach { itemId ->
-            if (itemId in cartMap.keys) {
-                cartMap.remove(itemId)
-            }
-        }
+        cartMap -= itemIdList.toSet()
 
         dataStore.edit { prefs ->
             val jsonString: String = Json.encodeToString(cartMap)

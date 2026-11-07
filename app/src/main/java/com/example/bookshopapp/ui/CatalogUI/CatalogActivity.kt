@@ -17,6 +17,7 @@ import com.example.bookshopapp.databinding.CartActivityBinding
 import com.example.bookshopapp.databinding.CatalogActivityBinding
 import com.example.bookshopapp.ui.AddCartActivity.AddCartActivity
 import com.example.bookshopapp.ui.BookUI.BookActivity
+import com.example.bookshopapp.ui.CartUI.CartActivity
 import com.example.bookshopapp.ui.ProfileUI.ProfileActivity
 import com.example.bookshopapp.ui.login.CatalogViewModel
 import com.example.bookshopapp.ui.login.LoginViewModel
@@ -143,6 +144,12 @@ class CatalogActivity : AppCompatActivity() {
 
         binding.icProfile.setOnClickListener {
             val intent = Intent(this, ProfileActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
+            startActivity(intent)
+        }
+
+        binding.icCart.setOnClickListener {
+            val intent = Intent(this, CartActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
             startActivity(intent)
         }

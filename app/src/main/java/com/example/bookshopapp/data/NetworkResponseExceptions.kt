@@ -24,5 +24,8 @@ class ConflictException(message: String): Exception(message)
 class NetworkFormatException(message: String): Exception(message)
 
 
+class CartException(message: String): Exception(message)
+
+
 // Кидаем если не подходит ничего из предыдущего
 class IDontKnowWhatsHappenedException(message: String): Exception(message)

@@ -27,38 +27,19 @@
         app:layout_constraintTop_toBottomOf="@+id/tvPageTitle"
         tools:text="Итого: 230.00 руб."/>
 
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/svItems"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rwItems"
         style="@style/ContainerBasic"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_margin="24dp"
+        android:padding="12dp"
         android:fillViewport="true"
         app:layout_constraintBottom_toTopOf="@+id/btnCreateOrder"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvOrderSum">
-
-        <LinearLayout
-            android:id="@+id/llItems"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
-
-            <include layout="@layout/item_cart" />
-
-            <include layout="@layout/item_cart" />
-
-            <include layout="@layout/item_cart" />
-
-            <include layout="@layout/item_cart" />
-
-            <include layout="@layout/item_cart" />
-
-        </LinearLayout>
-
-    </androidx.core.widget.NestedScrollView>
+    </androidx.recyclerview.widget.RecyclerView>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnCreateOrder"

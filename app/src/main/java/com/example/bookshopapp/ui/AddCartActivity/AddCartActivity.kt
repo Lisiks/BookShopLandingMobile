@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.bookshopapp.databinding.AddToCartActivityBinding
 import com.example.bookshopapp.ui.ProfileUI.ProfileActivity
 import com.example.bookshopapp.ui.login.CatalogViewModel
+import com.google.android.material.snackbar.Snackbar
 
 
 class AddCartActivity : AppCompatActivity() {
@@ -37,7 +38,9 @@ class AddCartActivity : AppCompatActivity() {
 
         viewModel.bookCount.observe(this) { currentCount ->
             binding.tvCount.text = currentCount.toString()
-            binding.tvPrice.text = viewModel.calculatePrice().toString()
+
+            val fullPriceText = "${"%.2f".format(viewModel.calculatePrice())} руб."
+            binding.tvPrice.text = fullPriceText
         }
 
         viewModel.loading.observe(this) { isLoading ->
@@ -45,6 +48,16 @@ class AddCartActivity : AppCompatActivity() {
             binding.btnAddToCart.isEnabled = !isLoading
 
         }
+
+
+        viewModel.error.observe(this) { message ->
+            if (message != null) {
+                Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
+                viewModel.onErrorShow()
+            }
+        }
+
+
 
         viewModel.bookIsAdded.observe(this) { currentAddedState ->
             if (currentAddedState) {
@@ -67,6 +80,8 @@ class AddCartActivity : AppCompatActivity() {
         binding.btnAddToCart.setOnClickListener {
             viewModel.addBook()
         }
+
+
 
     }
 }

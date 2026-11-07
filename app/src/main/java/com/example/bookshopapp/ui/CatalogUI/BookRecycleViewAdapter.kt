@@ -54,7 +54,7 @@ class BookRecycleViewAdapter(
         holder.tvAuthor.text = authorString
         holder.tvGenre.text = currentBook.genre.name
 
-        val priceString = "${round(currentBook.price * 100) / 100} руб."
+        val priceString = "${"%.2f".format(currentBook.price)} руб."
         holder.tvPrice.text = priceString
         holder.ivImage.load("http://127.0.0.1:8000/${currentBook.imageFilePath}")
 

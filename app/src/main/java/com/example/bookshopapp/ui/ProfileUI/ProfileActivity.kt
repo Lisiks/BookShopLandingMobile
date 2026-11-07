@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.example.bookshopapp.databinding.ProfileActivityBinding
+import com.example.bookshopapp.ui.CartUI.CartActivity
 import com.example.bookshopapp.ui.CatalogUI.CatalogActivity
 import com.google.android.material.snackbar.Snackbar
 
@@ -29,6 +30,12 @@ class ProfileActivity : AppCompatActivity() {
 
         binding.icProfile.setOnClickListener {
             val intent = Intent(this, ProfileActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
+            startActivity(intent)
+        }
+
+        binding.icCart.setOnClickListener {
+            val intent = Intent(this, CartActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
             startActivity(intent)
         }

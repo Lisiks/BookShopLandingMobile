@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.bookshopapp.BookShopApplication
+import com.example.bookshopapp.data.CartException
 import kotlinx.coroutines.launch
 import kotlin.math.round
 
@@ -20,9 +21,11 @@ class AddCartViewModel(application: Application): AndroidViewModel(application) 
     private val _bookTitle = MutableLiveData<String?>(null)
     private val _bookPrice = MutableLiveData<Double?>(null)
     private val _bookCount = MutableLiveData<Int>(1)
+    private val _error = MutableLiveData<String?>(null)
 
     private val _loading = MutableLiveData<Boolean>(false)
     private val _bookIsAdded = MutableLiveData<Boolean>(false)
+    val error: LiveData<String?> = _error
 
 
     val bookId: LiveData<Int?> = _bookId
@@ -33,11 +36,7 @@ class AddCartViewModel(application: Application): AndroidViewModel(application) 
     val bookIsAdded: LiveData<Boolean> = _bookIsAdded
     val loading: LiveData<Boolean> = _loading
 
-
-
-    fun calculatePrice(): Double {
-        return round((_bookCount.value ?: 0) * (_bookPrice.value ?: 0.0) * 100) / 100
-     }
+    fun calculatePrice(): Double = (_bookCount.value ?: 0) * (_bookPrice.value ?: 0.0)
 
     fun upCount() {
         _bookCount.value = (_bookCount.value ?: 0) + 1
@@ -56,6 +55,12 @@ class AddCartViewModel(application: Application): AndroidViewModel(application) 
             try {
                 cartManager.addCartItem(_bookId.value ?: 0, _bookCount.value ?: 0)
                 _bookIsAdded.value = true
+            } catch (e: CartException) {
+                if (e.message == "Item count must be greater than 0") {
+                    _error.value = "Кол-во единиц товара должно быть больше 0"
+                } else {
+                    _error.value = "Достигуто максимальное кол-во позиций для одного заказа (10). Пожалуйста, перейдите в корзину для настройки заказа"
+                }
             } finally {
                 _loading.value = false
             }
@@ -67,5 +72,9 @@ class AddCartViewModel(application: Application): AndroidViewModel(application) 
         _bookId.value = bookId
         _bookTitle.value = bookTitle
         _bookPrice.value = bookPrice
+    }
+
+    fun onErrorShow() {
+        _error.value = null
     }
 }
