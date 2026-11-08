@@ -4,10 +4,14 @@ package com.example.bookshopapp
 import android.app.Application
 import com.example.bookshopapp.data.local.CartDataStoreManager
 import com.example.bookshopapp.data.remote.RetrofitClient
+import com.example.bookshopapp.data.repository.AuthorsRepository
 import com.example.bookshopapp.data.repository.BookRepository
 import com.example.bookshopapp.data.repository.CommentRepository
+import com.example.bookshopapp.data.repository.GenreRepository
+import com.example.bookshopapp.data.repository.NetworkAuthorRepository
 import com.example.bookshopapp.data.repository.NetworkBookRepository
 import com.example.bookshopapp.data.repository.NetworkCommentRepository
+import com.example.bookshopapp.data.repository.NetworkGenreRepository
 import com.example.bookshopapp.data.repository.NetworkOrderRepository
 import com.example.bookshopapp.data.repository.NetworkShopsRepository
 import com.example.bookshopapp.data.repository.NetworkUserRepository
@@ -47,6 +51,14 @@ class BookShopApplication : Application() {
 
     val ordersRepository: OrderRepository by lazy {
         NetworkOrderRepository(retrofitClient.orderApi)
+    }
+
+    val genresRepository: GenreRepository by lazy {
+        NetworkGenreRepository(retrofitClient.genreApi)
+    }
+
+    val authorsRepository: AuthorsRepository by lazy {
+        NetworkAuthorRepository(retrofitClient.authorApi)
     }
 
 }

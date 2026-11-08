@@ -15,6 +15,10 @@ interface BookApiService {
     suspend fun getBooks(
         @Query("page") page: Int,
         @Query("title") title: String? = null,
+        @Query("minPrice") minPrice: Double? = null,
+        @Query("maxPrice") maxPrice: Double? = null,
+        @Query("authorId") authorId: Int? = null,
+        @Query("genreId") genreId: Int? = null
     ): Map<Int, BookDTO>
 
 

@@ -99,7 +99,7 @@ class NetworkCommentRepository(
             } catch (e: IOException) {
                 throw InternetException("Bad internet")
             } catch (e: HttpException) {
-                if (e.code() == 403) {
+                if (e.code() == 401) {
                     throw AuthException("You are unathorize")
                 } else if (e.code() == 404) {
                     throw NotFoundException("Comment doesnt found")

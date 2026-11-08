@@ -17,10 +17,14 @@ import kotlin.coroutines.cancellation.CancellationException
 
 interface BookRepository {
 
-    val title: String?
-    val pageIsLast: Boolean
 
-    suspend fun getBooks(curTitle: String? = null): Map<Int, BookDTO>
+    suspend fun getBooks(
+        curTitle: String? = null,
+        curAuthorId: Int? = null,
+        curGenreId: Int? = null,
+        curMinPrice: Double? = null,
+        curMaxPrice: Double? = null
+    ): Map<Int, BookDTO>
     suspend fun getBooksNextPage(): Map<Int, BookDTO>
     suspend fun getBookById(bookId: Int): BookDTO
     suspend fun getBookByList(bookIdsList: List<Int>):  Map<Int, BookDTO>
@@ -35,24 +39,34 @@ class NetworkBookRepository(
     private var _page: Int = 0
     private var _pageIsLast = false
 
-    override val pageIsLast: Boolean
-        get() = _pageIsLast
+
 
     private var _title: String? = null
+    private var _authorId: Int? = null
+    private var _genreId: Int? = null
+    private var _minPrice: Double? = null
+    private var _maxPrice: Double? = null
 
-    override val title: String?
-        get() = _title
 
     override suspend fun getBooks(
         curTitle: String?,
+        curAuthorId: Int?,
+        curGenreId: Int?,
+        curMinPrice: Double?,
+        curMaxPrice: Double?
     ): Map<Int, BookDTO> = _mutex.withLock {
 
         _title = curTitle
+        _authorId = curAuthorId
+        _genreId = curGenreId
+        _minPrice = curMinPrice
+        _maxPrice = curMaxPrice
+
         _page = 0
         _pageIsLast = false
 
         try {
-            val responseResult = _bookApiService.getBooks(_page, _title)
+            val responseResult = _bookApiService.getBooks(_page, _title, _minPrice, _maxPrice, _authorId, _genreId)
 
             if (responseResult.isEmpty()) {
                 _pageIsLast = true
@@ -70,12 +84,12 @@ class NetworkBookRepository(
     }
 
     override suspend fun getBooksNextPage(): Map<Int, BookDTO> = _mutex.withLock {
-        if (pageIsLast) {
+        if (_pageIsLast) {
             mapOf()
         } else {
 
             try {
-                val responseResult = _bookApiService.getBooks(_page + 1, _title)
+                val responseResult = _bookApiService.getBooks(_page + 1, _title, _minPrice, _maxPrice, _authorId, _genreId)
                 if (responseResult.isEmpty()) {
                     _pageIsLast = true
                 } else {

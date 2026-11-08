@@ -23,7 +23,7 @@ class CatalogViewModel (application: Application): AndroidViewModel(application)
     private val _error = MutableLiveData<String?>(null)
     private var _bookData = MutableLiveData<Map<Int, BookDTO>>(mapOf())
 
-    private var _title = MutableLiveData<String?>(repository.title)
+    private var _title = MutableLiveData<String?>(null)
 
 
     val loading: LiveData<Boolean> = _loading

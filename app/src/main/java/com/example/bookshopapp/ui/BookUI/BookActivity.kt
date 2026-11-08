@@ -3,6 +3,8 @@ package com.example.bookshopapp.ui.BookUI
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -18,6 +20,7 @@ import com.example.bookshopapp.ui.CartUI.CartActivity
 import com.example.bookshopapp.ui.CatalogUI.CatalogActivity
 import com.example.bookshopapp.ui.ProfileUI.ProfileActivity
 import androidx.core.net.toUri
+import androidx.core.view.isVisible
 import com.google.android.material.snackbar.Snackbar
 
 class BookActivity : AppCompatActivity() {
@@ -81,6 +84,29 @@ class BookActivity : AppCompatActivity() {
             binding.btnDeleteComment.isEnabled = !isLoading
         }
 
+        viewModel.myCommentText.observe(this) { text ->
+            if (text != null) {
+                binding.myCommentForm.isVisible = true
+                binding.myCommentText.text = text
+            } else {
+                binding.myCommentForm.isVisible = false
+            }
+        }
+
+        viewModel.commentData.observe(this) { commentList ->
+            val commentLinearLayoutInflater = LayoutInflater.from(binding.llCommentList.context)
+            binding.llCommentList.removeAllViews()
+            commentList.forEach { commentData ->
+                val newCommentView = commentLinearLayoutInflater.inflate(R.layout.item_comment, binding.llCommentList, false)
+
+                newCommentView.findViewById<TextView>(R.id.tvUserName).text = commentData.username
+                newCommentView.findViewById<TextView>(R.id.tvCommentDate).text = commentData.datetime.split("T")[0]
+                newCommentView.findViewById<TextView>(R.id.tvCommentText).text = commentData.text
+
+                binding.llCommentList.addView(newCommentView)
+            }
+        }
+
 
         binding.tvDemoLink.setOnClickListener {
             val bookData = viewModel.bookData.value
@@ -105,6 +131,11 @@ class BookActivity : AppCompatActivity() {
 
         binding.btnCreateComment.setOnClickListener {
             viewModel.createComment(binding.etCommentText.text.toString())
+            binding.etCommentText.setText("")
+        }
+
+        binding.btnDeleteComment.setOnClickListener {
+            viewModel.deleteComment()
         }
 
 
