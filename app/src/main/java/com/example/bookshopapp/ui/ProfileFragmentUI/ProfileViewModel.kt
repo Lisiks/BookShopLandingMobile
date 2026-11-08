@@ -6,11 +6,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.bookshopapp.BookShopApplication
 import com.example.bookshopapp.data.AuthException
+import com.example.bookshopapp.data.IDontKnowWhatsHappenedException
 import com.example.bookshopapp.data.InternetException
 import com.example.bookshopapp.data.remote.dto.OrderDTO
 import com.example.bookshopapp.data.remote.dto.UserDTO
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.supervisorScope
 
 
 class ProfileViewModel (application: android.app.Application): AndroidViewModel(application) {
@@ -39,21 +41,31 @@ class ProfileViewModel (application: android.app.Application): AndroidViewModel(
     fun loadUserData() {
         viewModelScope.launch {
             _orderDataLoading.value = true
-            try {
-                val orderDataDeferred = async { orderRepository.getOrders() }
-                val userDataDeferred = async { userRepository.getUserInfo() }
 
-                _userData.value = userDataDeferred.await()
-                _orderData.value = orderDataDeferred.await()
+            supervisorScope {
+                val orderDataDeferred = async { runCatching { orderRepository.getOrders() } }
+                val userDataDeferred = async { runCatching { userRepository.getUserInfo() } }
 
-            } catch (e: InternetException) {
-                _error.value = "Ошибка подключения к сети. Проверьте соединение с интернетом"
-            } catch (e: AuthException) {
-                _userIsAnAthorise.value = true
-            } finally {
 
-                _orderDataLoading.value = false
+                val orderDataResult = orderDataDeferred.await()
+                val userDataResult =  userDataDeferred.await()
+
+                userDataResult.onSuccess { _userData.value = it }
+                orderDataResult.onSuccess { _orderData.value = it }
+
+                if (userDataResult.exceptionOrNull() is AuthException || orderDataResult.exceptionOrNull() is AuthException) {
+                    _userIsAnAthorise.value = true
+                }
+
+                if (userDataResult.exceptionOrNull() is InternetException || orderDataResult.exceptionOrNull() is InternetException) {
+                    _error.value = "Ошибка подключения к сети. Проверьте соединение с интернетом"
+                }
+
+                if (userDataResult.exceptionOrNull() is IDontKnowWhatsHappenedException || orderDataResult.exceptionOrNull() is IDontKnowWhatsHappenedException) {
+                    _error.value = "Непредвиденная ошибка"
+                }
             }
+            _orderDataLoading.value = false
         }
     }
 
@@ -64,35 +76,50 @@ class ProfileViewModel (application: android.app.Application): AndroidViewModel(
 
         viewModelScope.launch {
             _orderDataLoading.value = true
-            try {
-                val orderData = orderRepository.getOrdersNextPage()
-                _orderData.value = (_orderData.value ?: mapOf()) + orderData
 
-            } catch (e: InternetException) {
-                _error.value = "Ошибка подключения к сети. Проверьте соединение с интернетом"
-            }catch (e: AuthException) {
+            supervisorScope {
+                val nextOrderPageDeferred = async { runCatching { orderRepository.getOrdersNextPage() } }
+
+                val nextOrderPageResult = nextOrderPageDeferred.await()
+                nextOrderPageResult.onSuccess { _orderData.value = (_orderData.value ?: mapOf()) + it }
+
+                if (nextOrderPageResult.exceptionOrNull() is AuthException) {
                     _userIsAnAthorise.value = true
-            } finally {
-                _orderDataLoading.value = false
+                }
+
+                if (nextOrderPageResult.exceptionOrNull() is InternetException) {
+                    _error.value = "Ошибка подключения к сети. Проверьте соединение с интернетом"
+                }
+
+                if (nextOrderPageResult.exceptionOrNull() is IDontKnowWhatsHappenedException) {
+                    _error.value = "Непредвиденная ошибка"
+                }
             }
+            _orderDataLoading.value = false
         }
     }
 
 
     fun logout() {
         viewModelScope.launch {
-            _profileLoading.value = true
-            try {
-                userRepository.logout()
-                _userIsAnAthorise.value = true
-            } catch (e: InternetException) {
-                _error.value = "Ошибка подключения к сети. Проверьте соединение с интернетом"
-            } finally {
-                _profileLoading.value = false
+            _orderDataLoading.value = true
+            supervisorScope {
+                val logoutDeferred = async { runCatching { userRepository.logout() } }
+                val logoutResult = logoutDeferred.await()
+                logoutResult.onSuccess { _userIsAnAthorise.value = true }
+
+                if (logoutResult.exceptionOrNull() is InternetException) {
+                    _error.value = "Ошибка подключения к сети. Проверьте соединение с интернетом"
+                }
+
+                if (logoutResult.exceptionOrNull() is IDontKnowWhatsHappenedException) {
+                    _error.value = "Непредвиденная ошибка"
+                }
+
             }
+            _profileLoading.value = false
         }
     }
-
 
 
     fun onErrorShow() {

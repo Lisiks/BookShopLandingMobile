@@ -10,9 +10,11 @@ import com.example.bookshopapp.BookShopApplication
 import com.example.bookshopapp.data.IDontKnowWhatsHappenedException
 import com.example.bookshopapp.data.InternetException
 import com.example.bookshopapp.data.LoginException
+import kotlinx.coroutines.async
 
 
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.supervisorScope
 
 
 class LoginViewModel (application: android.app.Application): AndroidViewModel(application) {
@@ -32,31 +34,39 @@ class LoginViewModel (application: android.app.Application): AndroidViewModel(ap
 
         viewModelScope.launch {
             _loading.value = true
-            try {
-                repository.login(login, password)
-                _loginSuccess.value = true
+            supervisorScope {
+                val loginDeferred = async { runCatching { repository.login(login, password) } }
+                val loginResult = loginDeferred.await()
 
-            } catch (e: IllegalArgumentException) {
-                if (e.message == "Username length must be >= 6") {
-                    _error.value =
-                        "Слишком короткое имя пользователя. Оно должно составлять не менее 6 символов"
-                } else {
-                    _error.value =
-                        "Слишком короткий пароль. Он должен составлять не менее 6 символов"
-                }
-            } catch (e: InternetException) {
-                _error.value = "Ошибка подключения к сети. Проверьте соединение с интернетом"
-            } catch (e: LoginException) {
+                loginResult.onSuccess { _loginSuccess.value = true }
 
-                if (e.message == "You are already authorized") {
-                    _loginSuccess.value = true
-                } else {
-                    _error.value = "Некорректный логин или пароль"
+                if (loginResult.exceptionOrNull() is IllegalArgumentException) {
+                    if (loginResult.exceptionOrNull()?.message == "Username length must be >= 6") {
+                        _error.value = "Слишком короткое имя пользователя. Оно должно составлять не менее 6 символов"
+                    } else {
+                        _error.value =
+                            "Слишком короткий пароль. Он должен составлять не менее 6 символов"
+                    }
                 }
 
-            } finally {
-                _loading.value = false
+                if (loginResult.exceptionOrNull() is InternetException) {
+                    _error.value = "Ошибка подключения к сети. Проверьте соединение с интернетом"
+                }
+
+                if (loginResult.exceptionOrNull() is LoginException) {
+                    if (loginResult.exceptionOrNull()?.message == "You are already authorized") {
+                        _loginSuccess.value = true
+                    } else {
+                        _error.value = "Некорректный логин или пароль"
+                    }
+                }
+
+                if (loginResult.exceptionOrNull() is IDontKnowWhatsHappenedException) {
+                    _error.value = "Непредвиденная ошибка"
+                }
             }
+            _loading.value = false
+
         }
     }
 

@@ -65,9 +65,11 @@ class CatalogActivity : AppCompatActivity() {
 
         val bookAdapter = BookRecycleViewAdapter(
             { bookId ->
-                            val intent = Intent(this, BookActivity::class.java)
-                            startActivity(intent)
-                        },
+                val intent = Intent(this, BookActivity::class.java).apply {
+                    putExtra("bookId", bookId)
+                }
+                startActivity(intent)
+            },
             { bookId, bookTitle, bookPrice ->
                 val intent = Intent(this, AddCartActivity::class.java).apply {
                     putExtra("bookId", bookId)

@@ -7,7 +7,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.bookshopapp.BookShopApplication
 import com.example.bookshopapp.data.InternetException
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.supervisorScope
 import kotlin.math.round
 
 
@@ -39,31 +41,57 @@ class CartViewModel (application: Application): AndroidViewModel(application) {
     fun loadCartData() {
         viewModelScope.launch {
             _loading.value = true
-            try {
-                val savedCartData = cartManager.getCartData()
+            supervisorScope {
+                val savedCartDataDeferred = async { runCatching { cartManager.getCartData() } }
+                val savedCartDataResult = savedCartDataDeferred.await()
 
-                val serverCartBookData = repository.getBookByList(savedCartData.keys.toList())
-
-                val newBookDataMap: MutableMap<Int, CartItem> = mutableMapOf()
-
-                for (cartElementId in serverCartBookData.keys) {
-                    newBookDataMap[cartElementId] = CartItem(
-                        cartElementId,
-                        serverCartBookData[cartElementId]?.title ?: "",
-                        savedCartData[cartElementId] ?: 1,
-                        serverCartBookData[cartElementId]?.price ?: 1.00
-                    )
-
+                savedCartDataResult.onFailure {
+                    _error.value = "Непредвиденная ошибка при чтении данных корзины"
+                    return@supervisorScope
                 }
-                _bookCartDataMap.value = newBookDataMap
 
-                val invalidCartElementIds = (savedCartData.keys - serverCartBookData.keys).toList()
-                cartManager.deleteCartMany(invalidCartElementIds)
-            } catch (e: InternetException) {
-                _error.value = "Ошибка подключения к сети. Проверьте соединение с интернетом"
-            } finally {
-                _loading.value = false
+                val savedCartData = savedCartDataResult.getOrNull() ?: mapOf()
+
+                val bookDataDeferred = async { runCatching {  repository.getBookByList(savedCartData.keys.toList()) } }
+                val bookDataResult = bookDataDeferred.await()
+
+                bookDataResult.onSuccess {
+                    val newBookDataMap: MutableMap<Int, CartItem> = mutableMapOf()
+                    for (cartElementId in it.keys) {
+                        newBookDataMap[cartElementId] = CartItem(
+                            cartElementId,
+                            it[cartElementId]?.title ?: "",
+                            savedCartData[cartElementId] ?: 1,
+                            it[cartElementId]?.price ?: 1.00
+                        )
+
+                    }
+                    _bookCartDataMap.value = newBookDataMap
+                }
+
+                if (bookDataResult.isSuccess) {
+                    val resultBookKeys = bookDataResult.getOrNull()?.keys ?: setOf()
+                    val invalidCartElementIds = (savedCartData.keys - resultBookKeys).toList()
+
+                    val deleteInvalidCartElementDeferred = async { runCatching { cartManager.deleteCartMany(invalidCartElementIds) } }
+                    val deleteInvalidCartElementResult = deleteInvalidCartElementDeferred.await()
+                    deleteInvalidCartElementResult.onFailure {
+                        _error.value = "Непредвиденная ошибка при сохранении данных корзины"
+                        return@supervisorScope
+                    }
+                }
+
+                if (bookDataResult.exceptionOrNull() is InternetException) {
+                    _error.value = "Ошибка подключения к сети. Проверьте соединение с интернетом"
+                }
+
+                if (bookDataResult.exceptionOrNull() is InternetException) {
+                    _error.value = "Непредвиденная ошибка"
+                }
             }
+
+            _loading.value = false
+
 
         }
     }
@@ -71,8 +99,20 @@ class CartViewModel (application: Application): AndroidViewModel(application) {
     fun clearCartData() {
         viewModelScope.launch {
             _loading.value = true
-            cartManager.deleteCartAll()
-            _bookCartDataMap.value = mapOf()
+
+            supervisorScope {
+                val clearCartDataDeferred = async { runCatching { cartManager.deleteCartAll() } }
+                val clearCartDataResult = clearCartDataDeferred.await()
+
+                clearCartDataResult.onSuccess {
+                    _bookCartDataMap.value = mapOf()
+                }
+
+                clearCartDataResult.onFailure {
+                    _error.value = "Непредвиденная ошибка при сохранении данных корзины"
+                    return@supervisorScope
+                }
+            }
             _loading.value = false
         }
     }
@@ -84,8 +124,20 @@ class CartViewModel (application: Application): AndroidViewModel(application) {
 
         viewModelScope.launch {
             _loading.value = true
-            cartManager.deleteCartItem(itemId)
-            _bookCartDataMap.value = (_bookCartDataMap.value ?: mutableMapOf()) - itemId
+
+            supervisorScope {
+                val deleteCartItemDataDeferred = async { runCatching { cartManager.deleteCartItem(itemId) } }
+                val deleteCartItemDataDeferredResult = deleteCartItemDataDeferred.await()
+
+                deleteCartItemDataDeferredResult.onSuccess {
+                    _bookCartDataMap.value = (_bookCartDataMap.value ?: mutableMapOf()) - itemId
+                }
+
+                deleteCartItemDataDeferredResult.onFailure {
+                    _error.value = "Непредвиденная ошибка при сохранении данных корзины"
+                    return@supervisorScope
+                }
+            }
             _loading.value = false
         }
 

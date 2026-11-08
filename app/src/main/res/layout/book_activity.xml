@@ -59,7 +59,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/tvProductTitle">
 
                 <TextView
-                    android:id="@+id/tvDescription"
+                    android:id="@+id/tvDescriptionHeader"
                     style="@style/TextViewParagraphLarge"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -72,17 +72,16 @@
 
 
                 <TextView
-                    android:id="@+id/tvBookAuthor"
+                    android:id="@+id/tvDescription"
                     style="@style/TextViewParagraphSmall"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="12dp"
                     android:justificationMode="inter_word"
                     android:text=""
-                    app:layout_constraintEnd_toStartOf="@+id/ivBookPhoto"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tvDescription"
-                    tools:text="Текст описания товара. Он может быть достаточно длинным, чтобы заполнить левую часть экрана. "/>
+                    app:layout_constraintEnd_toEndOf="@+id/tvDescriptionHeader"
+                    app:layout_constraintStart_toStartOf="@+id/tvDescriptionHeader"
+                    app:layout_constraintTop_toBottomOf="@+id/tvDescriptionHeader"
+                    tools:text="Автор: Иванов Иван Иванович" />
 
                 <ImageView
                     android:id="@+id/ivBookPhoto"
@@ -188,11 +187,10 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:justificationMode="inter_word"
-                    android:text=""
+                    android:text="@string/bookPageS12"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tvISBN"
-                    tools:text="DEMO версия: book_demo" />
+                    app:layout_constraintTop_toBottomOf="@+id/tvISBN" />
 
                 <ImageButton
                     android:id="@+id/btnToCart"
@@ -321,9 +319,6 @@
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/myCommentText" />
-
-
-
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -357,15 +352,6 @@
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tvAllCommentHeader">
-
-                    <include layout="@layout/item_comment" />
-
-                    <include layout="@layout/item_comment" />
-
-                    <include layout="@layout/item_comment" />
-
-                    <include layout="@layout/item_comment" />
-
                 </LinearLayout>
 
 

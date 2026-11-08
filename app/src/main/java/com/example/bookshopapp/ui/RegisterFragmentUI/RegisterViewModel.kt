@@ -12,9 +12,11 @@ import com.example.bookshopapp.data.ConflictException
 import com.example.bookshopapp.data.IDontKnowWhatsHappenedException
 import com.example.bookshopapp.data.InternetException
 import com.example.bookshopapp.data.LoginException
+import kotlinx.coroutines.async
 
 
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.supervisorScope
 
 
 class RegisterViewModel (application: Application): AndroidViewModel(application) {
@@ -34,30 +36,39 @@ class RegisterViewModel (application: Application): AndroidViewModel(application
 
         viewModelScope.launch {
             _loading.value = true
-            try {
-                repository.register(login, password, passwordConfirm)
-                _registerSuccess.value = true
 
-            } catch (e: IllegalArgumentException) {
-                if (e.message == "Username length must be >= 6") {
-                    _error.value =
-                        "Слишком короткое имя пользователя. Оно должно составлять не менее 6 символов"
-                } else if (e.message == "Password length must be >= 6"){
-                    _error.value =
-                        "Слишком короткий пароль. Он должен составлять не менее 6 символов"
-                } else {
-                    _error.value = "Пароли не совпадают"
+            supervisorScope {
+                val registerDeferred = async { runCatching { repository.register(login, password, passwordConfirm)} }
+                val registerResult = registerDeferred.await()
+
+                registerResult.onSuccess { _registerSuccess.value = true }
+
+                if (registerResult.exceptionOrNull() is IllegalArgumentException) {
+                    if (registerResult.exceptionOrNull()?.message == "Username length must be >= 6") {
+                        _error.value =
+                            "Слишком короткое имя пользователя. Оно должно составлять не менее 6 символов"
+
+                    } else if (registerResult.exceptionOrNull()?.message == "Password length must be >= 6") {
+                        _error.value =
+                            "Слишком короткий пароль. Он должен составлять не менее 6 символов"
+                    } else {
+                        _error.value = "Пароли не совпадают"
+                    }
                 }
-            } catch (e: InternetException) {
-                _error.value = "Ошибка подключения к сети. Проверьте соединение с интернетом"
-            } catch (e: ConflictException) {
-                _error.value = "Пользователь с данный именем уже существует"
 
-            } catch (e: IDontKnowWhatsHappenedException) {
-                _error.value = "Ну тут реально хз"
-            } finally {
-                _loading.value = false
+                if (registerResult.exceptionOrNull() is InternetException) {
+                    _error.value = "Ошибка подключения к сети. Проверьте соединение с интернетом"
+                }
+
+                if (registerResult.exceptionOrNull() is ConflictException) {
+                    _error.value = "Пользователь с данный именем уже существует"
+                }
+
+                if (registerResult.exceptionOrNull() is IDontKnowWhatsHappenedException) {
+                    _error.value = "Непредвиденная ошибка"
+                }
             }
+            _loading.value = false
         }
     }
 

@@ -13,6 +13,7 @@ data class BookDTO(
     val genreId: Int,
     val pageCount: Int,
     val writeYear: Int,
+    val isbn: String,
     val price: Double,
     val imageFilePath: String,
     val demoFilePath: String,

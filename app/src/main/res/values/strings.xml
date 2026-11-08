@@ -36,4 +36,5 @@
     <string name="addToCartS4">Добавить в корзину</string>
     <string name="addToCartS5">Назад</string>
     <string name="itemOrderS3">Кол-во</string>
+    <string name="bookPageS12">DEMO версия: Нажмите для открытия</string>
 </resources>

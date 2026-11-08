@@ -15,7 +15,7 @@ import kotlin.coroutines.cancellation.CancellationException
 
 interface CommentRepository {
     suspend fun getComments(bookId: Int): List<CommentDTO>
-    suspend fun getCommentMe(bookId: Int): CommentDTO
+    suspend fun getCommentMe(bookId: Int): CommentDTO?
     suspend fun createComment(bookId: Int, text: String)
     suspend fun deleteComment(bookId: Int)
 
@@ -35,13 +35,11 @@ class NetworkCommentRepository(
         } catch (e: IOException) {
             throw InternetException("Bad internet")
         } catch (e: HttpException) {
-
             if (e.code() == 404) {
                 throw NotFoundException("Book doesnt found")
             } else {
                 throw IDontKnowWhatsHappenedException("IDK")
             }
-
         } catch (e: Exception) {
             throw IDontKnowWhatsHappenedException("IDK")
         }
@@ -49,7 +47,7 @@ class NetworkCommentRepository(
 
 
 
-    override suspend fun getCommentMe(bookId: Int): CommentDTO = _mutex.withLock {
+    override suspend fun getCommentMe(bookId: Int): CommentDTO? = _mutex.withLock {
         try {
             _commentApiService.getCommentMe(bookId)
         } catch (e: CancellationException) {
@@ -57,14 +55,7 @@ class NetworkCommentRepository(
         } catch (e: IOException) {
             throw InternetException("Bad internet")
         } catch (e: HttpException) {
-            if (e.code() == 403) {
-                throw AuthException("You are unathorize")
-            } else if (e.code() == 404) {
-                throw NotFoundException("Comment doesnt found")
-            } else {
-                throw IDontKnowWhatsHappenedException("IDK")
-            }
-
+            null
         } catch (e: Exception) {
             throw IDontKnowWhatsHappenedException("IDK")
         }
@@ -82,8 +73,10 @@ class NetworkCommentRepository(
             } catch (e: IOException) {
                 throw InternetException("Bad internet")
             } catch (e: HttpException) {
-                if (e.code() == 403) {
+                if (e.code() == 401) {
                     throw AuthException("You are unathorize")
+                } else if (e.code() == 404) {
+                    throw NotFoundException("Book doesnt found")
                 } else if (e.code() == 409) {
                     throw ConflictException("Comment on book already exists")
                 } else

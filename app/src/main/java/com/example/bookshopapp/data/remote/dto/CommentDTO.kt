@@ -9,7 +9,7 @@ class CommentDTO(
     @SerialName("user_id")
     val userId: Int,
     val datetime: String,
-    val test: String,
+    val text: String,
     val username: String
 )
 

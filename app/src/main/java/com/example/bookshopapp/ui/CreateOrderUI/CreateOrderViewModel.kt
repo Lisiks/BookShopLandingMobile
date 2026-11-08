@@ -8,12 +8,14 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.bookshopapp.BookShopApplication
 import com.example.bookshopapp.data.AuthException
+import com.example.bookshopapp.data.IDontKnowWhatsHappenedException
 import com.example.bookshopapp.data.InternetException
 import com.example.bookshopapp.data.NotFoundException
 import com.example.bookshopapp.data.remote.dto.ShopDTO
 import com.example.bookshopapp.ui.CartUI.CartItem
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.supervisorScope
 
 class  CreateOrderViewModel (application: Application): AndroidViewModel(application) {
     private val cartManager =
@@ -53,7 +55,6 @@ class  CreateOrderViewModel (application: Application): AndroidViewModel(applica
     }
 
     fun createOrder() {
-
         val selectedShop = selectedShop.value ?: 0
 
         if (selectedShop == 0) {
@@ -61,7 +62,11 @@ class  CreateOrderViewModel (application: Application): AndroidViewModel(applica
             return
         }
 
-        if ((_bookCartDataMap.value?.size ?: 0) == 0) {
+        val itemList = _bookCartDataMap.value?.values?.map { bookData  ->
+            mapOf("bookId" to bookData.bookId, "count" to bookData.bookCount)
+        } ?: listOf()
+
+        if (itemList.isEmpty()) {
             _error.value = "В данный момент ваша корзина пуста"
             return
         }
@@ -69,26 +74,34 @@ class  CreateOrderViewModel (application: Application): AndroidViewModel(applica
         viewModelScope.launch {
             _loading.value = true
 
-            val itemList = _bookCartDataMap.value?.values?.map { bookData  ->
-                mapOf("bookId" to bookData.bookId, "count" to bookData.bookCount)
-            } ?: listOf()
+            supervisorScope {
+                val createOrderDeferred = async { runCatching { orderRepository.createOrder(selectedShop, itemList) } }
+                val createOrderResult = createOrderDeferred.await()
 
-            try {
-                orderRepository.createOrder(selectedShop, itemList)
-                cartManager.deleteCartAll()
-                _orderCreated.value = true
-            } catch (e: InternetException) {
-                _error.value = "Ошибка подключения к сети. Проверьте соединение с интернетом"
-            } catch (e: AuthException) {
-                _error.value = "Для создания заказа необходимо войти в аккаунт"
+                if (createOrderResult.isSuccess) {
+                    val clearCartDeferred = async { runCatching { cartManager.deleteCartAll() } }
+                    clearCartDeferred.await()
+                    _orderCreated.value = true
+                }
 
-            } catch (e: NotFoundException) {
-                _error.value = "В заказе присутствуют недоступные товары, пожалуйста, обновите корзину, перейдя на соответствующую вкладку"
-            } finally {
-                _loading.value = false
+                if (createOrderResult.exceptionOrNull() is InternetException) {
+                    _error.value = "Ошибка подключения к сети. Проверьте соединение с интернетом"
+                }
+
+                if (createOrderResult.exceptionOrNull() is AuthException) {
+                    _error.value = "Для создания заказа необходимо войти в аккаунт"
+                }
+
+                if (createOrderResult.exceptionOrNull() is NotFoundException) {
+                    _error.value = "В заказе присутствуют недоступные товары, пожалуйста, обновите корзину, перейдя на соответствующую вкладку"
+                }
+
+                if (createOrderResult.exceptionOrNull() is IDontKnowWhatsHappenedException) {
+                    _error.value = "Непредвиденная ошибка"
+                }
 
             }
-
+            _loading.value = false
         }
     }
 
@@ -96,47 +109,70 @@ class  CreateOrderViewModel (application: Application): AndroidViewModel(applica
     fun loadCartData() {
         viewModelScope.launch {
             _loading.value = true
-            val savedCartData = cartManager.getCartData()
-
-            try {
-                val cartItemDataDeferred =
-                    async { bookRepository.getBookByList(savedCartData.keys.toList()) }
-                val shopsData = async { shopRepository.getShops() }
-
-                val serverCartBookData = cartItemDataDeferred.await()
-                val serverShopsData = shopsData.await()
 
 
-                val newBookDataMap: MutableMap<Int, CartItem> = mutableMapOf()
-                for (cartElementId in serverCartBookData.keys) {
-                    newBookDataMap[cartElementId] = CartItem(
-                        cartElementId,
-                        serverCartBookData[cartElementId]?.title ?: "",
-                        savedCartData[cartElementId] ?: 1,
-                        serverCartBookData[cartElementId]?.price ?: 1.00
-                    )
+            supervisorScope {
+                val cartDataDeferred = async { runCatching { cartManager.getCartData() }}
+                val cartDataResult = cartDataDeferred.await()
+
+                cartDataResult.onFailure {
+                    _error.value = "Непредвиденная ошибка при сохранении данных корзины"
+                    return@supervisorScope
                 }
 
-                val newShopsDataMap: MutableMap<String, Int> = mutableMapOf("Выберите магазин" to 0)
-                for (shopData in serverShopsData.values) {
-                    newShopsDataMap["г. ${shopData.town}, ул. ${shopData.street} ${shopData.housing}"] = shopData.id
+                val savedCartData = cartDataResult.getOrNull() ?: mapOf()
+
+                val cartItemDataDeferred = async { runCatching { bookRepository.getBookByList(savedCartData.keys.toList()) } }
+                val shopsDataDeferred = async { runCatching { shopRepository.getShops() } }
+
+                val cartItemDataResult = cartItemDataDeferred.await()
+                val shopsDataResult = shopsDataDeferred.await()
+
+                cartItemDataResult.onSuccess {
+                    val newBookDataMap: MutableMap<Int, CartItem> = mutableMapOf()
+                    for (cartElementId in it.keys) {
+                        newBookDataMap[cartElementId] = CartItem(
+                            cartElementId,
+                            it[cartElementId]?.title ?: "",
+                            savedCartData[cartElementId] ?: 1,
+                            it[cartElementId]?.price ?: 1.00
+                        )
+
+                    }
+                    _bookCartDataMap.value = newBookDataMap
                 }
 
-                _shopsDataMap.value = newShopsDataMap
-                _bookCartDataMap.value = newBookDataMap
-                val invalidCartElementIds = (savedCartData.keys - serverCartBookData.keys).toList()
+                if (cartItemDataResult.isSuccess) {
+                    val resultBookKeys = cartItemDataResult.getOrNull()?.keys ?: setOf()
+                    val invalidCartElementIds = (savedCartData.keys - resultBookKeys).toList()
 
-                if (invalidCartElementIds.isNotEmpty()) {
-                    cartManager.deleteCartMany(invalidCartElementIds)
-                    _error.value =
-                        "Часть книг из вашей корзины более недоступно для заказа. Перейдите в корзину для обновления данных."
+                    val deleteInvalidCartElementDeferred = async { runCatching { cartManager.deleteCartMany(invalidCartElementIds) } }
+                    val deleteInvalidCartElementResult = deleteInvalidCartElementDeferred.await()
+
+                    deleteInvalidCartElementResult.onFailure {
+                        _error.value = "Непредвиденная ошибка при сохранении данных корзины"
+                        return@supervisorScope
+                    }
                 }
-            } catch (e: InternetException) {
-                _error.value = "Ошибка подключения к сети. Проверьте соединение с интернетом"
 
-            } finally {
-                _loading.value = false
+                shopsDataResult.onSuccess {
+                    val newShopsDataMap: MutableMap<String, Int> = mutableMapOf("Выберите магазин" to 0)
+                    for (shopData in it.values) {
+                        newShopsDataMap["г. ${shopData.town}, ул. ${shopData.street} ${shopData.housing}"] = shopData.id
+                    }
+                    _shopsDataMap.value = newShopsDataMap
+                }
+
+                if (cartItemDataResult.exceptionOrNull() is InternetException || shopsDataResult.exceptionOrNull() is InternetException) {
+                    _error.value = "Ошибка подключения к сети. Проверьте соединение с интернетом"
+                }
+
+                if (cartItemDataResult.exceptionOrNull() is IDontKnowWhatsHappenedException || shopsDataResult.exceptionOrNull() is IDontKnowWhatsHappenedException) {
+                    _error.value = "Непредвиденная ошибка"
+                }
             }
+
+            _loading.value = false
         }
     }
 

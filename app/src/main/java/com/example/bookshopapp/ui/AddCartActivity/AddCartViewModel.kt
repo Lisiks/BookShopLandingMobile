@@ -7,7 +7,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.bookshopapp.BookShopApplication
 import com.example.bookshopapp.data.CartException
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.supervisorScope
 import kotlin.math.round
 
 
@@ -52,18 +54,28 @@ class AddCartViewModel(application: Application): AndroidViewModel(application) 
         viewModelScope.launch {
             _loading.value = true
 
-            try {
-                cartManager.addCartItem(_bookId.value ?: 0, _bookCount.value ?: 0)
-                _bookIsAdded.value = true
-            } catch (e: CartException) {
-                if (e.message == "Item count must be greater than 0") {
-                    _error.value = "Кол-во единиц товара должно быть больше 0"
-                } else {
-                    _error.value = "Достигуто максимальное кол-во позиций для одного заказа (10). Пожалуйста, перейдите в корзину для настройки заказа"
+            supervisorScope {
+                val addCartItemDeferred = async { runCatching { cartManager.addCartItem(_bookId.value ?: 0, _bookCount.value ?: 0) } }
+                val addCartItemResult = addCartItemDeferred.await()
+
+                addCartItemResult.onSuccess {
+                    _bookIsAdded.value = true
                 }
-            } finally {
-                _loading.value = false
+
+                if (addCartItemResult.exceptionOrNull() is CartException) {
+                    if (addCartItemResult.exceptionOrNull()?.message == "Item count must be greater than 0") {
+                        _error.value = "Кол-во единиц товара должно быть больше 0"
+                    } else {
+                        _error.value = "Достигуто максимальное кол-во позиций для одного заказа (10). Пожалуйста, перейдите в корзину для настройки заказа"
+                    }
+                }
+
+                if (addCartItemResult.exceptionOrNull() != null && addCartItemResult.exceptionOrNull() !is CartException) {
+                    _error.value = "Непредвиденная ошибка при сохранении данных корзины"
+                }
             }
+
+            _loading.value = false
         }
     }
 
