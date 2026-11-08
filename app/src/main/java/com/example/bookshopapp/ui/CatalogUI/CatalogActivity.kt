@@ -1,10 +1,12 @@
 package com.example.bookshopapp.ui.CatalogUI
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -19,6 +21,7 @@ import com.example.bookshopapp.ui.AddCartActivity.AddCartActivity
 import com.example.bookshopapp.ui.BookUI.BookActivity
 import com.example.bookshopapp.ui.CartUI.CartActivity
 import com.example.bookshopapp.ui.ProfileUI.ProfileActivity
+import com.example.bookshopapp.ui.SearchBookUI.SearchBookActivity
 import com.example.bookshopapp.ui.login.CatalogViewModel
 import com.example.bookshopapp.ui.login.LoginViewModel
 import com.google.android.material.snackbar.Snackbar
@@ -51,6 +54,26 @@ class CatalogActivity : AppCompatActivity() {
             }
         }
     }
+
+
+    private val searchParametersLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val minPrice = result.data?.getDoubleExtra("minPrice", -1.0)
+            val maxPrice = result.data?.getDoubleExtra("maxPrice", -1.0)
+            val authorId = result.data?.getIntExtra("authorId", -1)
+            val genreId = result.data?.getIntExtra("genreId", -1)
+
+            viewModel.setMinPrice(if (minPrice != -1.0) minPrice else null)
+            viewModel.setMaxPrice(if (maxPrice != -1.0) maxPrice else null)
+            viewModel.setAuthorId(if (authorId != -1) authorId else null)
+            viewModel.setGenreId(if (genreId != -1) genreId else null)
+            viewModel.getFirstBookPage()
+        }
+    }
+
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -107,6 +130,7 @@ class CatalogActivity : AppCompatActivity() {
         viewModel.loading.observe(this) { isLoading ->
             binding.etSearch.isEnabled = !isLoading
             binding.btnClear.isEnabled = !isLoading
+            binding.btnSearchSetting.isEnabled = !isLoading
         }
 
         viewModel.title.observe(this) { inputTitle ->
@@ -115,13 +139,30 @@ class CatalogActivity : AppCompatActivity() {
 
         binding.etSearch.setOnFocusChangeListener { v, hasFocus ->
             if (!hasFocus) {
-                viewModel.getFirstBookPage(binding.etSearch.text.toString())
+                viewModel.setTitle(binding.etSearch.text.toString())
+                viewModel.getFirstBookPage()
             }
+        }
+
+        binding.btnSearchSetting.setOnClickListener {
+            val intent = Intent(this, SearchBookActivity::class.java).apply {
+                putExtra("minPrice", viewModel.minPrice.value)
+                putExtra("maxPrice", viewModel.maxPrice.value)
+                putExtra("authorId", viewModel.authorId.value)
+                putExtra("genreId", viewModel.genreId.value)
+            }
+            searchParametersLauncher.launch(intent)
         }
 
 
         binding.btnClear.setOnClickListener {
             binding.etSearch.setText("")
+
+            viewModel.setTitle(null)
+            viewModel.setAuthorId(null)
+            viewModel.setGenreId(null)
+            viewModel.setMinPrice(null)
+            viewModel.setMaxPrice(null)
             viewModel.getFirstBookPage()
         }
 
@@ -143,6 +184,11 @@ class CatalogActivity : AppCompatActivity() {
             intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
             startActivity(intent)
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.searchOnResume()
     }
 
     override fun onDestroy() {

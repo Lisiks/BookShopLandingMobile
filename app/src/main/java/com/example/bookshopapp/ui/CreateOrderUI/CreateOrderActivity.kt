@@ -41,9 +41,7 @@ class CreateOrderActivity : AppCompatActivity() {
 
             }
 
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-                // вызывается, когда выбор сброшен (редко)
-            }
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
 
 

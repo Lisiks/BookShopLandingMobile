@@ -37,4 +37,10 @@
     <string name="addToCartS5">Назад</string>
     <string name="itemOrderS3">Кол-во</string>
     <string name="bookPageS12">DEMO версия: Нажмите для открытия</string>
+    <string name="searchActivityS1">Параметры поиска</string>
+    <string name="searchActivityS2">Минимальная цена:</string>
+    <string name="serachActivityS3">Максимальная цена:</string>
+    <string name="searchPageS4">Автор:</string>
+    <string name="searchPageS">Жанр</string>
+    <string name="searchActivityS6">Применить</string>
 </resources>

@@ -45,6 +45,10 @@
             android:name=".ui.CreateOrderUI.CreateOrderActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".ui.SearchBookUI.SearchBookActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
     </application>
 
 </manifest>

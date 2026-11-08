@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/tvPageTitle"
+        style="@style/TextViewHeaderFirst"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:text="@string/searchActivityS1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <TextView
+        android:id="@+id/tvMinPriceLabelLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
+        android:text="@string/searchActivityS2"
+        android:labelFor="@+id/etMinPrice"
+
+        style="@style/TextViewParagraphLarge"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvPageTitle" />
+
+    <EditText
+        android:id="@+id/etMinPrice"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="24dp"
+
+        android:inputType="numberDecimal"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        style="@style/EditTextBasic"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvMinPriceLabelLabel" />
+
+
+
+    <TextView
+        android:id="@+id/tvMaxPriceLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/serachActivityS3"
+        android:labelFor="@+id/etMaxPrice"
+
+        style="@style/TextViewParagraphLarge"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/etMinPrice" />
+
+    <EditText
+        android:id="@+id/etMaxPrice"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="24dp"
+
+        android:inputType="numberDecimal"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        style="@style/EditTextBasic"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvMaxPriceLabel" />
+
+
+
+    <TextView
+        android:id="@+id/tvAuthorLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/searchPageS4"
+        android:labelFor="@+id/etAuthor"
+
+        style="@style/TextViewParagraphLarge"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/etMaxPrice" />
+
+    <Spinner
+        android:id="@+id/etAuthor"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="24dp"
+
+        android:completionThreshold="0"
+        android:dropDownAnchor="@id/actvShop"
+        android:inputType="text"
+        android:spinnerMode="dropdown"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        style="@style/EditTextBasic"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvAuthorLabel" />
+
+
+
+    <TextView
+        android:id="@+id/tvGenreLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/searchPageS"
+        android:labelFor="@+id/etGenre"
+
+        style="@style/TextViewParagraphLarge"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/etAuthor" />
+
+    <Spinner
+        android:id="@+id/etGenre"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="24dp"
+
+        android:completionThreshold="0"
+        android:dropDownAnchor="@id/actvShop"
+        android:spinnerMode="dropdown"
+        android:inputType="text"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        style="@style/EditTextBasic"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvGenreLabel" />
+
+
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnSumbitSearch"
+        style="@style/ButtonBasic"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="24dp"
+
+        android:padding="10dp"
+        android:text="@string/searchActivityS6"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnBack"
+        style="@style/ButtonAlt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="24dp"
+        android:padding="10dp"
+        android:text="@string/createOrderPageS4"
+        app:layout_constraintBottom_toBottomOf="@+id/btnSumbitSearch"
+        app:layout_constraintStart_toEndOf="@+id/btnSumbitSearch"
+        app:layout_constraintTop_toTopOf="@+id/btnSumbitSearch" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

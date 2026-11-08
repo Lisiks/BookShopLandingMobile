@@ -22,15 +22,27 @@
         android:layout_width="0dp"
         android:layout_height="40dp"
         android:layout_marginStart="24dp"
-        android:layout_marginEnd="12dp"
 
         android:layout_marginTop="12dp"
+        android:layout_marginEnd="12dp"
         android:inputType="text"
         android:paddingStart="12dp"
         android:paddingEnd="12dp"
-        app:layout_constraintEnd_toStartOf="@+id/btnClear"
+        app:layout_constraintEnd_toStartOf="@+id/btnSearchSetting"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvPageTitle" />
+
+
+    <ImageButton
+        android:id="@+id/btnSearchSetting"
+        style="@style/ImageButtonParams"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+
+        android:layout_marginEnd="12dp"
+        app:layout_constraintBottom_toBottomOf="@+id/btnClear"
+        app:layout_constraintEnd_toStartOf="@+id/btnClear"
+        app:layout_constraintTop_toTopOf="@+id/btnClear" />
 
     <ImageButton
         android:id="@+id/btnClear"
